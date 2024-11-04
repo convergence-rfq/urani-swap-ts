@@ -14,7 +14,7 @@ export default function InverterButton({
   return (
     <div className="text-center -my-6 text-xs flex justify-center items-center">
       <button
-        className="shadow-lg rounded-xl text-3xl text-purple-medium border-2 border-purple-medium bg-white hover:text-black hover:bg-cyan hover:border-black transition-all h-12 w-12 flex items-center justify-center z-10"
+        className="shadow-lg rounded-[50%] text-3xl text-cyan  bg-[#191C1E] hover:text-black hover:bg-cyan hover:border-black transition-all h-[50px] w-[50px] flex items-center justify-center z-10"
         onClick={onInvert}
       >
         {isLoading ? (

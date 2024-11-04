@@ -18,9 +18,9 @@ import React from "react";
 export const metadata: Metadata = {
   title: "Trade Different with Urani",
   description: "Trade Different with Urani",
-  icons: {
-    icon: "/assets/logos/space/space_logo_tiny.png",
-  },
+  // icons: {
+  //   icon: "/assets/logos/space/space_logo_tiny.png",
+  // },
 };
 
 export const viewport: Viewport = {
@@ -51,7 +51,7 @@ export default function RootLayout({
           <AppWalletProvider>{children}</AppWalletProvider>
         </MantineThemeProvider>
       </body>
-       <GoogleAnalytics gaId="G-EPFPL5GD6D" /> 
+      <GoogleAnalytics gaId="G-EPFPL5GD6D" />
     </html>
   );
 }

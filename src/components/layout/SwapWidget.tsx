@@ -16,7 +16,7 @@ export default function SwapWidget() {
     useSwap();
 
   return (
-    <div className="sm:w-[600px] min-h-[400px] mx-0 md:mx-auto my-0 mb-4 px-4 md:px-6 py-8 bg-white rounded-lg shadow-lg dark:bg-zinc-800 grow sm:grow-0">
+    <div className="sm:w-[600px] min-h-[400px] mx-0 md:mx-auto my-0 mt-8 mb-4 px-4 md:px-6 py-8 bg-[#080C0E] rounded-lg border-solid border-[1px] border-[#213C37]">
       <div className="w-full flex flex-col items-center justify-center text-purple">
         <WidgetTitle />
         {orderStatus === "INCOMPLETE" && (
