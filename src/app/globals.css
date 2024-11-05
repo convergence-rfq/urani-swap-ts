@@ -55,14 +55,7 @@ h4 {
 
 body {
   color: var(--purple-900);
-  background: var(--cream-200);
-  background: linear-gradient(
-    287deg,
-    rgba(193, 255, 255, 1) 0%,
-    rgba(227, 224, 237, 1) 25%,
-    rgba(189, 179, 210, 1) 65%,
-    rgba(227, 224, 237, 1) 100%
-  );
+  background: #080c0e;
 }
 
 @layer utilities {
@@ -209,4 +202,19 @@ body {
   80% {
     transform: rotateY(360deg);
   }
+}
+.ic_table_wrap tr {
+  border: none;
+}
+.ic_table_wrap tbody tr:nth-child(odd) {
+  background: #202629;
+}
+.ic_table_wrap tbody tr:hover {
+  background: #202629;
+}
+.token_select_modal_header button svg {
+  color: #fff;
+}
+.token_select_modal_header button:hover svg {
+  color: #333;
 }

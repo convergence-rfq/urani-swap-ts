@@ -44,7 +44,7 @@ export default function TableOrders({ orders, isLoading }: TableOrdersProps) {
           batchId,
         }) => {
           return (
-            <Table.Tr key={intentId}>
+            <Table.Tr key={intentId} className="text-[#AEB9B8]">
               <Table.Td className="flex">
                 {getTokenIcon(srcToken, tokenList) ? (
                   <Image
@@ -134,15 +134,15 @@ export default function TableOrders({ orders, isLoading }: TableOrdersProps) {
   return (
     <Fragment>
       <Table.ScrollContainer minWidth={800}>
-        <Table highlightOnHover verticalSpacing="md">
+        <Table highlightOnHover verticalSpacing="md" className="ic_table_wrap">
           <Table.Thead>
-            <Table.Tr className="text-lg">
-              <Table.Th>Sell</Table.Th>
-              <Table.Th>Receive</Table.Th>
-              <Table.Th>Limit Price</Table.Th>
-              <Table.Th>Expiration</Table.Th>
-              <Table.Th>Status</Table.Th>
-              <Table.Th>Arena</Table.Th>
+            <Table.Tr className="text-lg text-[#787F83] ">
+              <Table.Th className="font-normal">Sell</Table.Th>
+              <Table.Th className="font-normal">Receive</Table.Th>
+              <Table.Th className="font-normal">Limit Price</Table.Th>
+              <Table.Th className="font-normal">Expiration</Table.Th>
+              <Table.Th className="font-normal">Status</Table.Th>
+              <Table.Th className="font-normal">Arena</Table.Th>
             </Table.Tr>
           </Table.Thead>
           {orders.length && !isLoading ? (

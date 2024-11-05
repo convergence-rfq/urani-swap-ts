@@ -13,7 +13,7 @@ export default function TokenSelectorButton({
   return (
     <button
       onClick={onClick}
-      className="flex justify-center items-center text-center font-medium rounded-xl bg-white hover:bg-cyan hover:text-black transition-all px-3 py-1 shadow select-none text-purple min-h-11 min-w-32"
+      className="flex justify-center items-center text-center font-medium rounded-xl bg-[#262E34] hover:bg-cyan hover:text-black transition-all px-3 py-1 shadow select-none text-white min-h-11 min-w-32"
     >
       {!token ? (
         "Select a token"

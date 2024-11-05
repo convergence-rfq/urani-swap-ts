@@ -35,11 +35,16 @@ function OrbitingMoonsSpinner() {
       </style>
       <div className="relative w-60 h-32 flex items-center justify-center">
         <div className="absolute w-12 h-12 bg-[#3E3172] rounded-full"></div>
-        <div className="moon" style={{ transformOrigin: 'center 40px' }}></div>
-        <div className="moon" style={{ transformOrigin: 'center -40px', animationDelay: '2s' }}></div>
+        <div className="moon" style={{ transformOrigin: "center 40px" }}></div>
+        <div
+          className="moon"
+          style={{ transformOrigin: "center -40px", animationDelay: "2s" }}
+        ></div>
       </div>
       <div className="mt-8 mb-8 text-center">
-        <p className={`text-[#3E3172] text-4xl font-bold ${architype_bayer.className}`}>
+        <p
+          className={`text-[#3E3172] text-4xl font-bold ${architype_bayer.className}`}
+        >
           Loading your orders, please wait...
         </p>
       </div>
@@ -86,21 +91,27 @@ export default function ListOrders() {
 
   return (
     <BasicPage>
-      <div className="w-full min-h-[70vh] p-8 bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-lg flex flex-col justify-center items-center">
+      <div className="w-full min-h-[70vh] p-8  border-solid border-[1px] border-[#202629]  backdrop-blur-md rounded-lg shadow-lg flex flex-col justify-center items-center">
         {!connected && (
-          <div className={`font-bold text-4xl flex justify-center items-center ${architype_bayer.className}`}>
+          <div
+            className={`font-bold text-white text-4xl flex justify-center items-center ${architype_bayer.className}`}
+          >
             <p>Please connect your wallet to view your orders.</p>
           </div>
         )}
 
         {connected && isLoading && (
-          <div className={`font-bold text-4xl flex justify-center items-center ${architype_bayer.className}`}>
+          <div
+            className={`font-bold text-white text-4xl flex justify-center items-center ${architype_bayer.className}`}
+          >
             <OrbitingMoonsSpinner />
           </div>
         )}
 
         {connected && !orders.length && !isLoading && (
-          <div className={`font-bold text-4xl flex justify-center items-center ${architype_bayer.className}`}>
+          <div
+            className={`font-bold text-white text-4xl flex justify-center items-center ${architype_bayer.className}`}
+          >
             <p>No orders found.</p>
           </div>
         )}

@@ -8,41 +8,44 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex flex-col-reverse sm:flex-row items-center justify-between">
-          <a
-            href="https://www.urani.trade"
-            rel="noopener noreferrer"
-          >
+          <a href="https://www.urani.trade" rel="noopener noreferrer">
             <div className="flex items-center justify-between">
-              <span className="text-sm sm:text-base">
-                <b>Back to urani.trade</b>
+              <span className="text-sm sm:text-base text-white">
+                <b>Back to convergence.trade</b>
               </span>
             </div>
           </a>
           <div className="flex flex-col sm:flex-row items-center order-2 sm:order-1">
             <div className="flex sm:justify-center items-center mb-8 sm:mb-0 ">
               <a
-                href="https://github.com/urani-trade"
-                className="hover:underline text-sm sm:text-base sm:mr-4"
+                href="https://github.com/convergence-rfq"
+                className="text-white hover:underline text-sm sm:text-base sm:mr-4"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span><b>Developers</b></span>
+                <span>
+                  <b>Developers</b>
+                </span>
               </a>
               <a
                 href="https://www.urani.trade/terms/conditions"
-                className="hover:underline text-sm sm:text-base sm:mr-4"
+                className="text-white hover:underline text-sm sm:text-base sm:mr-4"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span><b>Terms</b></span>
+                <span>
+                  <b>Terms</b>
+                </span>
               </a>
               <a
                 href="https://www.urani.trade/terms/privacy"
-                className="hover:underline text-sm sm:text-base sm:mr-4"
+                className="text-white hover:underline text-sm sm:text-base sm:mr-4"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <span><b>Privacy</b></span>
+                <span>
+                  <b>Privacy</b>
+                </span>
               </a>
             </div>
           </div>

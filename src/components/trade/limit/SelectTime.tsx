@@ -22,7 +22,7 @@ export default function SelectTime({
   expireTime,
 }: SelectTimeProps) {
   return (
-    <div className="rounded-2xl border-2 border-cream-light hover:border-cyan bg-cream-light selection:text-purple-medium selection:bg-purple-medium-dark">
+    <div className="rounded-2xl border-[1px]   border-[#202629] hover:border-cyan  selection:text-purple-medium selection:bg-purple-medium-dark">
       <Select
         aria-label={label}
         label={label}
@@ -34,9 +34,9 @@ export default function SelectTime({
         classNames={{
           option: "hover:bg-cream hover:text-black",
           dropdown: "rounded-2xl border-2 border-cream-light",
-          label: "ml-4 mt-3 text-sm font-bold text-purple",
+          label: "ml-4 mt-3 text-sm font-bold text-white",
           input:
-            "text-right text-purple -mt-8 rounded-2xl text-xl border-0 focus:ring-0 focus:border-0 bg-transparent",
+            "text-right text-white -mt-8 rounded-2xl text-xl border-0 focus:ring-0 focus:border-0 bg-transparent",
         }}
       />
     </div>

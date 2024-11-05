@@ -1,10 +1,6 @@
 "use client";
 
-import { 
-  CustomFlowbiteTheme, 
-  Flowbite, 
-  Navbar,
-  } from "flowbite-react";
+import { CustomFlowbiteTheme, Flowbite, Navbar } from "flowbite-react";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -94,25 +90,23 @@ export default function Header() {
     <header>
       <Flowbite theme={{ theme: customTheme }}>
         <Navbar fluid>
-          <Navbar.Brand as={Link} href="https://urani.trade/">
+          <Navbar.Brand as={Link} href="/">
             <div className="relative flex w-full items-center justify-between">
               <Image
                 className="relative mr-14"
-                src="/assets/logos/space/space_logo_tiny.png"
-                alt="Urani Logo"
-                width={40}
-                height={40}
+                src="/assets/logos/space/logo.png"
+                alt="Logo"
+                width={170}
+                height={30}
                 priority
               />
             </div>
           </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse>
-
-
             <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
-              <Navbar.Link as={Link} href="https://swap.urani.trade/">
-                <div className="relative group text-purple font-bold text-2xl">
+              <Navbar.Link as={Link} href="/">
+                <div className="relative group text-white font-medium text-xl">
                   <span>Swap</span>
                   <Underscore />
                 </div>
@@ -122,7 +116,7 @@ export default function Header() {
 
             <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
               <Navbar.Link as={Link} href="/dashboard">
-                <div className="relative group text-purple font-bold text-2xl">
+                <div className="relative group text-white font-medium text-xl">
                   <span>Dashboard</span>
                   <Underscore />
                 </div>
@@ -132,7 +126,7 @@ export default function Header() {
 
             <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
               <Navbar.Link as={Link} href="/astronomy">
-                <div className="relative group text-purple font-bold text-2xl">
+                <div className="relative group text-white font-medium text-xl">
                   <span>Astronomy</span>
                   <Underscore />
                 </div>
