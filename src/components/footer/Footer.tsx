@@ -8,17 +8,17 @@ export default function Footer() {
           </div>
         </div>
         <div className="flex flex-col-reverse sm:flex-row items-center justify-between">
-          <a href="https://www.urani.trade" rel="noopener noreferrer">
+          <a href="https://www.convergence.trade" rel="noopener noreferrer">
             <div className="flex items-center justify-between">
               <span className="text-sm sm:text-base text-white">
-                <b>Back to urani.trade</b>
+                <b>Back to convergence.trade</b>
               </span>
             </div>
           </a>
           <div className="flex flex-col sm:flex-row items-center order-2 sm:order-1">
             <div className="flex sm:justify-center items-center mb-8 sm:mb-0 ">
               <a
-                href="https://github.com/urani-trade"
+                href="https://github.com/convergence-rfq"
                 className="text-white hover:underline text-sm sm:text-base sm:mr-4"
                 target="_blank"
                 rel="noopener noreferrer"
