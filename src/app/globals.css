@@ -212,3 +212,9 @@ body {
 .ic_table_wrap tbody tr:hover {
   background: #202629;
 }
+.token_select_modal_header button svg {
+  color: #fff;
+}
+.token_select_modal_header button:hover svg {
+  color: #333;
+}

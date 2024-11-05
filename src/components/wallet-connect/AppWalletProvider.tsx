@@ -41,6 +41,7 @@ export default function AppWalletProvider({
             href: "https://station.jup.ag/docs/additional-topics/wallet-list",
           },
           notificationCallback: WalletNotification,
+          theme: "dark",
         }}
       >
         {children}

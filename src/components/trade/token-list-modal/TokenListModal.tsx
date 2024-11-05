@@ -31,9 +31,9 @@ export default function TokenListModal({
       centered
       radius="lg"
       classNames={{
-        content: "bg-white",
-        header: "bg-white sticky",
-        title: "font-bold text-xl text-purple",
+        content: "bg-[#3A3B43] text-white token_select_modal",
+        header: "bg-[#3A3B43] sticky text-white token_select_modal_header",
+        title: "font-bold text-xl text-white",
       }}
     >
       <TextInput
@@ -43,7 +43,8 @@ export default function TokenListModal({
         value={inputText}
         onChange={(event) => setInputText(event.currentTarget.value)}
         classNames={{
-          input: "bg-cream-light focus:ring-0 focus:border-0",
+          input:
+            "bg-slate-950 border-0 rounded-[20px] focus:ring-0 focus:border-0 text-white",
         }}
       />
 
