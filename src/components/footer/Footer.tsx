@@ -28,7 +28,7 @@ export default function Footer() {
                 </span>
               </a>
               <a
-                href="https://www.urani.trade/terms/conditions"
+                href="https://www.convergence.so/tos"
                 className="text-white hover:underline text-sm sm:text-base sm:mr-4"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -38,7 +38,7 @@ export default function Footer() {
                 </span>
               </a>
               <a
-                href="https://www.urani.trade/terms/privacy"
+                href="https://www.convergence.so/privacy"
                 className="text-white hover:underline text-sm sm:text-base sm:mr-4"
                 target="_blank"
                 rel="noopener noreferrer"
