@@ -34,7 +34,7 @@ export default function SelectTime({
         classNames={{
           option: "hover:bg-cream hover:text-black",
           dropdown: "rounded-2xl border-2 border-cream-light",
-          label: "ml-4 mt-3 text-sm font-bold text-white",
+          label: "ml-3 mt-3 text-sm font-bold text-white",
           input:
             "text-right text-white -mt-8 rounded-2xl text-xl border-0 focus:ring-0 focus:border-0 bg-transparent",
         }}
