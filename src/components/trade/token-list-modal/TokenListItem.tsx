@@ -10,7 +10,7 @@ export default function TokenListItem({ item, onClick }: TokenListItemProps) {
   return (
     <button
       key={item.address}
-      className="w-full block hover:bg-[#4E4F56] transition-all px-4 py-2 my-2"
+      className="w-full block hover:bg-[#0f1215] border-solid border-l-[2px] border-[transparent] hover:border-[#83fbdd]  transition-all px-4 py-2 my-2"
       onClick={onClick}
     >
       <div className="flex items-center">
@@ -24,8 +24,10 @@ export default function TokenListItem({ item, onClick }: TokenListItemProps) {
           />
         </div>
         <div className="flex flex-col flex-grow text-left">
-          <span>{item.symbol}</span>
-          <span className="text-xs text-gray-500">{item.name}</span>
+          <span className="text-[14px] text-[#31c5c5] font-medium">
+            {item.symbol}
+          </span>
+          <span className="text-[12px] text-[#787f83]">{item.name}</span>
         </div>
         {item.balance && (
           <div className="text-right">

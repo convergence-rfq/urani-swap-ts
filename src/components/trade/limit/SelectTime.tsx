@@ -22,7 +22,7 @@ export default function SelectTime({
   expireTime,
 }: SelectTimeProps) {
   return (
-    <div className="rounded-2xl border-[1px]   border-[#202629] hover:border-cyan  selection:text-purple-medium selection:bg-purple-medium-dark">
+    <div className="rounded-[25px] bg-[#121618] selection:text-purple-medium selection:bg-purple-medium-dark">
       <Select
         aria-label={label}
         label={label}
