@@ -30,7 +30,8 @@ export default function TokenSelector({
 
   return (
     <>
-      <div className="rounded-2xl border-[1px]   border-[#202629] hover:border-cyan selection:text-purple-medium selection:bg-purple-medium-dark">
+      {/* <div className="rounded-2xl border-[1px]   border-[#202629] hover:border-cyan selection:text-purple-medium selection:bg-purple-medium-dark"> */}
+      <div className="rounded-2xl selection:text-purple-medium selection:bg-purple-medium-dark">
         <NumberInput
           label={label}
           aria-label="Enter Amount"
@@ -46,10 +47,10 @@ export default function TokenSelector({
           onChange={setInputValue}
           placeholder="0.00"
           classNames={{
-            label: "ml-4 mt-4 text-sm font-bold text-white",
-            section: "ml-2 md:ml-4 w-auto -mt-24 sm:-mt-0",
+            label: "ml-4 mb-4 text-sm font-bold text-white",
+            section: "ml-1 md:ml-4 w-auto -mt-24 sm:-mt-0",
             input:
-              "text-right text-white pr-3 rounded-2xl text-xl sm:text-3xl border-0 focus:ring-0 focus:border-0 md:min-h-20 bg-transparent mt-12 sm:mt-0",
+              "bg-[#121618] text-right text-white pr-3 rounded-[25px] text-xl sm:text-3xl border-0 focus:ring-0 focus:border-0  mt-12 sm:mt-0",
           }}
         />
         {convertedToUSD ? (

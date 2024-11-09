@@ -13,20 +13,20 @@ export default function TokenSelectorButton({
   return (
     <button
       onClick={onClick}
-      className="flex justify-center items-center text-center font-medium rounded-xl bg-[#262E34] hover:bg-cyan hover:text-black transition-all px-3 py-1 shadow select-none text-white min-h-11 min-w-32"
+      className="flex justify-center items-center text-center font-medium rounded-xl  hover:bg-[#262e33] hover:text-white transition-all px-3 py-2 shadow select-none text-white"
     >
       {!token ? (
         "Select a token"
       ) : (
         <>
           <Image
-            className="rounded-full mr-3 max-w-auto"
-            width={30}
-            height={30}
+            className="rounded-full mr-2 max-w-auto"
+            width={20}
+            height={20}
             src={token.logoURI}
             alt=""
           />
-          <span className="font-semibold">{token.symbol}</span>
+          <span className="font-medium text-[14px]">{token.symbol}</span>
           <span className="material-symbols-rounded ml-1 -mr-1">
             keyboard_arrow_down
           </span>
