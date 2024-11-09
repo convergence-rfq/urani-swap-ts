@@ -50,7 +50,7 @@ export default function TokenSelector({
             label: "ml-4 mb-4 text-sm font-bold text-white",
             section: "ml-1 md:ml-4 w-auto -mt-24 sm:-mt-0",
             input:
-              "bg-[#121618] text-right text-white pr-3 rounded-[25px] text-xl sm:text-3xl border-0 focus:ring-0 focus:border-0 bg-transparent mt-12 sm:mt-0",
+              "bg-[#121618] text-right text-white pr-3 rounded-[25px] text-xl sm:text-3xl border-0 focus:ring-0 focus:border-0  mt-12 sm:mt-0",
           }}
         />
         {convertedToUSD ? (

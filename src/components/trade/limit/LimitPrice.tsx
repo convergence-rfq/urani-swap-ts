@@ -37,7 +37,7 @@ export default function LimitPrice({
           section: "-mt-20 md:-mt-24 mr-2 w-auto",
           label: "ml-4 mb-4 text-sm font-bold text-white",
           input:
-            "bg-[#121618] text-right text-white pr-3 rounded-[25px] text-xl sm:text-3xl border-0 focus:ring-0 focus:border-0  bg-transparent relative z-10",
+            "bg-[#121618] text-right text-white pr-3 rounded-[25px] text-xl sm:text-3xl border-0 focus:ring-0 focus:border-0  relative z-10",
         }}
       />
     </div>
