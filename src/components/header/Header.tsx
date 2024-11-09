@@ -124,7 +124,7 @@ export default function Header() {
               <Underscore />
             </div>
 
-            <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
+            {/* <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
               <Navbar.Link as={Link} href="/astronomy">
                 <div className="relative group text-white font-medium text-xl">
                   <span>Astronomy</span>
@@ -132,7 +132,7 @@ export default function Header() {
                 </div>
               </Navbar.Link>
               <Underscore />
-            </div>
+            </div> */}
 
             <div className="grow"></div>
 
