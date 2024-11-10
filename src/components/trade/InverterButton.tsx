@@ -20,9 +20,9 @@ export default function InverterButton({
         {isLoading ? (
           <Image
             className="block spinning"
-            width={35}
-            height={35}
-            src="/assets/logos/space/space_logo_tiny.png"
+            width={30}
+            height={30}
+            src="/assets/logos/space/icon.png"
             alt="Loading..."
           />
         ) : (

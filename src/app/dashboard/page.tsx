@@ -6,7 +6,7 @@ import TableOrders from "@/components/trade/orders/TableOrders";
 import axios from "../api/axios";
 import { Pagination } from "@mantine/core";
 import { useUnifiedWallet } from "@jup-ag/wallet-adapter";
-import { architype_bayer } from "../fonts/config"; // Importing the custom font
+// Importing the custom font
 
 const PER_PAGE = 10;
 
@@ -42,9 +42,7 @@ function OrbitingMoonsSpinner() {
         ></div>
       </div>
       <div className="mt-8 mb-8 text-center">
-        <p
-          className={`text-[#3E3172] text-4xl font-bold ${architype_bayer.className}`}
-        >
+        <p className={`text-[#3E3172] text-4xl font-bold `}>
           Loading your orders, please wait...
         </p>
       </div>
@@ -94,7 +92,7 @@ export default function ListOrders() {
       <div className="w-full min-h-[70vh] p-8  border-solid border-[1px] border-[#202629]  backdrop-blur-md rounded-lg shadow-lg flex flex-col justify-center items-center">
         {!connected && (
           <div
-            className={`font-bold text-white text-4xl flex justify-center items-center ${architype_bayer.className}`}
+            className={`font-bold text-white text-4xl flex justify-center items-center `}
           >
             <p>Please connect your wallet to view your orders.</p>
           </div>
@@ -102,7 +100,7 @@ export default function ListOrders() {
 
         {connected && isLoading && (
           <div
-            className={`font-bold text-white text-4xl flex justify-center items-center ${architype_bayer.className}`}
+            className={`font-bold text-white text-4xl flex justify-center items-center `}
           >
             <OrbitingMoonsSpinner />
           </div>
@@ -110,7 +108,7 @@ export default function ListOrders() {
 
         {connected && !orders.length && !isLoading && (
           <div
-            className={`font-bold text-white text-4xl flex justify-center items-center ${architype_bayer.className}`}
+            className={`font-bold text-white text-4xl flex justify-center items-center `}
           >
             <p>No orders found.</p>
           </div>
