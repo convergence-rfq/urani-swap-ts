@@ -27,7 +27,7 @@ export default function LimitPrice({
           <Button
             size="xs"
             onClick={resetToMarket}
-            className="text-[#AEB9B8] bg-[#202629] hover:bg-[#262e33] hover:text-whit"
+            className="text-[#AEB9B8] bg-[#202629] hover:bg-[#262e33] hover:text-white"
           >
             Set to market
           </Button>
