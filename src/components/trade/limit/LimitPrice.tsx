@@ -24,7 +24,11 @@ export default function LimitPrice({
         label={label}
         allowNegative={false}
         rightSection={
-          <Button size="xs" onClick={resetToMarket}>
+          <Button
+            size="xs"
+            onClick={resetToMarket}
+            className="text-[#AEB9B8] bg-[#202629] hover:bg-[#262e33] hover:text-white"
+          >
             Set to market
           </Button>
         }
