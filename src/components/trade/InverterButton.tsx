@@ -12,9 +12,11 @@ export default function InverterButton({
   isLoading,
 }: InverterButtonProps) {
   return (
-    <div className="text-center -my-6 text-xs flex justify-center items-center">
+    <div className="text-center -my-2 text-xs flex justify-center items-center relative">
+      <hr className="absolute top-[calc(50%-1px)] -z-0 w-full border-[#131b2480]"></hr>
+      <div className="z-10 inline-block">
       <button
-        className="shadow-lg rounded-[50%] text-3xl text-cyan  bg-[#191C1E] hover:text-black hover:bg-cyan hover:border-black transition-all h-[50px] w-[50px] flex items-center justify-center z-10"
+        className="group/flip flex h-8 w-8 items-center cursor-pointer flex-col justify-center rounded-full border-[3px] border-[#131b24] bg-[#1c2936] text-v2-lily/50 hover:border-[#c7f284] hover:shadow-swap-input-dark"
         onClick={onInvert}
       >
         {isLoading ? (
@@ -26,11 +28,13 @@ export default function InverterButton({
             alt="Loading..."
           />
         ) : (
-          <span className="material-symbols-rounded text-3xl block p-2">
+          <span className="material-symbols-rounded text-sm block text-[#e8f9ff80] group/flip hover:text-[#c7f284]">
             {icon}
           </span>
         )}
       </button>
+      </div>
+      
     </div>
   );
 }

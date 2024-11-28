@@ -69,7 +69,7 @@ export default function LimitForm() {
       type="pending"
       icon="progress_activity"
       mainMessage="Your order is being sent"
-    />
+    /> 
   ) : (
     <div className="w-full h-full flex flex-col gap-4">
       <TokenSelector
@@ -80,28 +80,31 @@ export default function LimitForm() {
         selectedToken={sellSelectedToken}
         tokenToUSDPrice={sellingTokenToUSD}
       />
-      <LimitPrice
-        inputValue={minReceived}
-        resetToMarket={resetToMarket}
-        setInputValue={setMinReceived}
-      />
-      <SelectTime setExpireTime={setExpireTime} expireTime={expireTime} />
-
-      <InverterButton
+       <InverterButton
         onInvert={invertAmounts}
         icon="arrow_downward"
         isLoading={isLoading}
       />
-
-      <TokenSelector
-        label="Received at least"
-        inputValue={buyAmount}
-        setInputValue={setBuyAmount}
-        setSelectedToken={setBuySelectedToken}
-        selectedToken={buySelectedToken}
-        tokenToUSDPrice={buyingTokenToUSD}
+      <LimitPrice
+        inputValue={minReceived}
+        resetToMarket={resetToMarket}
+        setInputValue={setMinReceived}
+        setSelectedToken={setSellSelectedToken}
+        selectedToken={sellSelectedToken}
       />
 
+      <div className="mb-2 flex-col-reverse space-y-2 sm:flex sm:flex-row sm:space-x-2 sm:space-y-0">
+        <TokenSelector
+          label="Received at least"
+          inputValue={buyAmount}
+          setInputValue={setBuyAmount}
+          setSelectedToken={setBuySelectedToken}
+          selectedToken={buySelectedToken}
+          tokenToUSDPrice={buyingTokenToUSD}
+        />
+        <SelectTime setExpireTime={setExpireTime} expireTime={expireTime} />
+      </div>
+      
       <div className="mt-0 md:mt-0">
         <SubmitButton
           onSubmit={onSubmit}

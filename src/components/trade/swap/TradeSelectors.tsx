@@ -29,7 +29,7 @@ export default function TradeSelectors({
 
   return (
     <>
-      <div className="my-4">
+      <div className="mb-1 mt-4">
         <TokenSelector
           label="Sell Amount"
           inputValue={sellAmount}
@@ -40,7 +40,7 @@ export default function TradeSelectors({
         />
       </div>
       <InverterButton onInvert={invertAmounts} isLoading={isLoading} />
-      <div className="my-4">
+      <div className="mb-4 mt-1">
         <TokenSelector
           label="Buy Amount"
           inputValue={buyAmount}

@@ -6,16 +6,16 @@ interface TokenSelectorButtonProps {
   token: Token | null;
 }
 
-export default function TokenSelectorButton({
+export default function ToBuyTokenSelectorButton({
   onClick,
   token,
 }: TokenSelectorButtonProps) {
   return (
     <>
-    <div className="group/select flex items-center justify-between">
+    <div className="group/select flex items-center justify-between w-full">
       <button
         onClick={onClick}
-        className="flex h-10 items-center rounded-[8px] transition-all border-transparent px-3 py-2 border bg-[#1c2936] group-hover/select:border-[#c7f28280] group-hover/select:bg-[rgba(199,242,132,0.2)] group-hover/select:shadow-swap-input-dark group-hover/select:text-white"
+        className="flex w-full text-white h-10 items-center rounded-[8px] transition-all border-transparent px-0 py-2 border"
       >
         {!token ? (
           "Select a token"
@@ -29,7 +29,7 @@ export default function TokenSelectorButton({
               alt=""
             />
             <span className="font-medium text-[16px] group-hover/select:text-white">{token.symbol}</span>
-            <span className="material-symbols-rounded ml-3 -mr-1 group-hover/select:text-[#c7f28280]">
+            <span className="material-symbols-rounded ml-auto -mr-1 group-hover/select:text-[#c7f28280]">
               keyboard_arrow_down
             </span>
           </>

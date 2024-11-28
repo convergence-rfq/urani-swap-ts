@@ -10,7 +10,7 @@ export default function TokenListItem({ item, onClick }: TokenListItemProps) {
   return (
     <button
       key={item.address}
-      className="w-full block hover:bg-[#0f1215] border-solid border-l-[2px] border-[transparent] hover:border-[#83fbdd]  transition-all px-4 py-2 my-2"
+      className="w-full block hover:bg-[#435467] rounded-sm border-[transparent] hover:border-[#83fbdd]  transition-all px-4 py-2 my-2"
       onClick={onClick}
     >
       <div className="flex items-center">
