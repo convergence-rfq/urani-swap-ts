@@ -15,7 +15,7 @@ export default function SwapSettings({
             <button
               type="button"
               onClick={() => setSwapSelected("auto")}
-              className={`lg:h-full lg:w-20 px-0.5 py-0.5 w-full flex flex-1 justify-center items-center font-semibold space-x-2 text-white fill-current border border-transparent h-full hover:text-labs/50 rounded-full ${swapSelected === "auto" ? "bg-[rgba(0,188,240,.1)] text-[#00bcf0]" : ""}`}
+              className={`lg:h-full lg:w-20 px-0.5 py-0.5 w-full flex flex-1 justify-center items-center font-semibold space-x-2 fill-current border border-transparent h-full hover:text-labs/50 rounded-full ${swapSelected === "auto" ? "bg-[rgba(0,188,240,.1)] text-[#00bcf0]" : "text-white "}`}
             >
               <span
                 className={`text-xxs md:text-xs font-semibold whitespace-nowrap ${swapSelected === 'auto ? "text-[#00bcf0]":""'}`}
@@ -26,7 +26,7 @@ export default function SwapSettings({
             <button
               type="button"
               onClick={() => setSwapSelected("manual")}
-              className={`lg:h-full lg:w-20 px-0.5 py-0.5 w-full flex flex-1 justify-center items-center font-semibold space-x-2 text-white fill-current border border-transparent h-full hover:text-labs/50 rounded-full !bg-labs/10 ${swapSelected === "manual" ? "bg-[rgba(0,188,240,.1)] text-[#00bcf0]" : ""}`}
+              className={`lg:h-full lg:w-20 px-0.5 py-0.5 w-full flex flex-1 justify-center items-center font-semibold space-x-2 fill-current border border-transparent h-full hover:text-labs/50 rounded-full !bg-labs/10 ${swapSelected === "manual" ? "bg-[rgba(0,188,240,.1)] text-[#00bcf0]" : "text-white "}`}
             >
               <span
                 className={`text-xxs md:text-xs font-semibold whitespace-nowrap text-labs ${swapSelected === 'manual ? "text-[#00bcf0]":""'}`}
