@@ -12,8 +12,11 @@ import { useInvertAmounts } from "@/hooks/useInvertAmounts";
 import useMarketPrices from "@/hooks/useMarketPrices";
 import { useSubmitLimitOrder } from "@/hooks/useSubmitLimitOrder";
 import { useSwap } from "../swap/SwapProvider";
+interface SwapTradeFormProps {
+  typeSelected: string;  // Expected prop: 'typeSelected' of type string
+}
 
-export default function LimitForm() {
+export default function LimitForm({typeSelected}: SwapTradeFormProps) {
   const {
     sellAmount,
     setSellAmount,
@@ -69,9 +72,10 @@ export default function LimitForm() {
       type="pending"
       icon="progress_activity"
       mainMessage="Your order is being sent"
-    />
+    /> 
   ) : (
     <div className="w-full h-full flex flex-col gap-4">
+      <div>
       <TokenSelector
         label="Sell Amount"
         inputValue={sellAmount}
@@ -79,29 +83,36 @@ export default function LimitForm() {
         setSelectedToken={setSellSelectedToken}
         selectedToken={sellSelectedToken}
         tokenToUSDPrice={sellingTokenToUSD}
+        typeSelected={typeSelected}
+      />
+      
+      </div>
+       <InverterButton
+        onInvert={invertAmounts}
+        icon="arrow_downward"
+        isLoading={isLoading}
       />
       <LimitPrice
         inputValue={minReceived}
         resetToMarket={resetToMarket}
         setInputValue={setMinReceived}
-      />
-      <SelectTime setExpireTime={setExpireTime} expireTime={expireTime} />
-
-      <InverterButton
-        onInvert={invertAmounts}
-        icon="arrow_downward"
-        isLoading={isLoading}
+        setSelectedToken={setSellSelectedToken}
+        selectedToken={sellSelectedToken}
       />
 
-      <TokenSelector
-        label="Received at least"
-        inputValue={buyAmount}
-        setInputValue={setBuyAmount}
-        setSelectedToken={setBuySelectedToken}
-        selectedToken={buySelectedToken}
-        tokenToUSDPrice={buyingTokenToUSD}
-      />
-
+      <div className="mb-2 flex-col-reverse space-y-2 sm:flex sm:flex-row sm:space-x-2 sm:space-y-0">
+        <TokenSelector
+          label="Received at least"
+          inputValue={buyAmount}
+          setInputValue={setBuyAmount}
+          setSelectedToken={setBuySelectedToken}
+          selectedToken={buySelectedToken}
+          tokenToUSDPrice={buyingTokenToUSD}
+          typeSelected={typeSelected}
+        />
+        <SelectTime setExpireTime={setExpireTime} expireTime={expireTime} />
+      </div>
+      
       <div className="mt-0 md:mt-0">
         <SubmitButton
           onSubmit={onSubmit}

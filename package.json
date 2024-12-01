@@ -16,6 +16,8 @@
     "os": false
   },
   "dependencies": {
+    "@devexperts/dxcharts-lite": "^2.6.1",
+    "@devexpress/dx-react-chart": "^4.0.9",
     "@jup-ag/common": "^6.0.0-beta.9",
     "@jup-ag/react-hook": "^6.0.0-beta.9",
     "@jup-ag/wallet-adapter": "^0.1.8",
@@ -28,6 +30,7 @@
     "@pythnetwork/price-service-client": "^1.9.0",
     "@radix-ui/react-slot": "^1.0.2",
     "@tabler/icons-react": "^3.14.0",
+    "@xyflow/react": "^12.3.5",
     "axios": "^1.7.4",
     "class-variance-authority": "^0.7.0",
     "classnames": "^2.5.1",
@@ -40,6 +43,7 @@
     "next": "^14.2.3",
     "react": "^18",
     "react-dom": "^18",
+    "recharts": "^2.13.3",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7"
   },

@@ -7,12 +7,15 @@ interface TradeSelectorsProps {
   sellingTokenToUSD?: number | null;
   buyingTokenToUSD?: number | null;
   isLoading: boolean;
+  typeSelected: string;
+  
 }
 
 export default function TradeSelectors({
   sellingTokenToUSD,
   buyingTokenToUSD,
   isLoading,
+  typeSelected
 }: TradeSelectorsProps) {
   const {
     sellAmount,
@@ -29,7 +32,7 @@ export default function TradeSelectors({
 
   return (
     <>
-      <div className="my-4">
+      <div className="mb-1 mt-4">
         <TokenSelector
           label="Sell Amount"
           inputValue={sellAmount}
@@ -37,10 +40,11 @@ export default function TradeSelectors({
           setSelectedToken={setSellSelectedToken}
           selectedToken={sellSelectedToken}
           tokenToUSDPrice={sellingTokenToUSD}
+          typeSelected={typeSelected}
         />
       </div>
       <InverterButton onInvert={invertAmounts} isLoading={isLoading} />
-      <div className="my-4">
+      <div className=" mt-1">
         <TokenSelector
           label="Buy Amount"
           inputValue={buyAmount}
@@ -48,6 +52,7 @@ export default function TradeSelectors({
           setSelectedToken={setBuySelectedToken}
           selectedToken={buySelectedToken}
           tokenToUSDPrice={buyingTokenToUSD}
+          typeSelected={typeSelected}
         />
       </div>
     </>
