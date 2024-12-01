@@ -115,8 +115,9 @@ export default function Header() {
             </div>
 
             <div className="relative text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
+
               <Navbar.Link as={Link} href="/dashboard">
-                <div className="relative group text-[#e8f9ffbf] hover:text-[#c7f284] font-medium text-xl">
+                <div className="relative group text-[#e8f9ffbf]  hover:text-[#c7f284] font-medium text-xl">
                   <span>Dashboard</span>
                   {/* <Underscore /> */}
                 </div>
