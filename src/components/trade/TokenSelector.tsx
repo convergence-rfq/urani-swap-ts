@@ -39,7 +39,9 @@ export default function TokenSelector({
             <>
               <div className="flex justify-between w-full items-center">
                 {label}
-                <div className="flex items-center gap-2">
+
+
+                <div className="flex items-center gap-2 ic-text-color">
                   <span className="flex gap-1 text-[13px] cursor-pointer items-center space-x-1 rounded text-white/50">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
