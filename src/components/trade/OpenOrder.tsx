@@ -1,12 +1,20 @@
 "use client";
 
 import Image from "next/image";
-import TredingChart from "./TredingChart";
+// import TredingChart from "./TredingChart";
+import dynamic from "next/dynamic";
+const TredingChart = dynamic(() => import("./TredingChart"), {
+  ssr: false,
+});
 
-export default function OpenOrder() {
+interface typeSelectedProps {
+  typeSelected:string;
+}
+
+export default function OpenOrder({typeSelected}:typeSelectedProps) {
   return (
     <>
-      <div className="relative flex w-full flex-col gap-y-4 overflow-hidden duration-300 ease-in-out h-auto lg:!w-[65%] lg:!max-w-[65%]">
+      <div className={`relative flex w-full flex-col gap-y-4 overflow-hidden duration-300 ease-in-out h-auto ${typeSelected !== "market" && "lg:!w-[65%] lg:!max-w-[65%]"}`}>
         <div className="relative">
           <div className="flex h-[400px] w-full flex-col overflow-hidden rounded-2xl bg-[#131b24] lg:h-[500px] transition-all ease-linear opacity-100">
             <div className="flex w-full items-center justify-between space-x-4 border-b border-[#e8f9ff0d] px-4 py-2">
@@ -107,8 +115,8 @@ export default function OpenOrder() {
                 </div>
               </div>
             </div>
-            <div className="relative flex-1 overflow-hidden transition-all">   
-                <TredingChart/>
+            <div className="relative flex-1 overflow-hidden transition-all">
+              <TredingChart />
             </div>
           </div>
         </div>

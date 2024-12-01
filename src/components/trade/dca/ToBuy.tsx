@@ -1,6 +1,5 @@
 import { useDisclosure } from "@mantine/hooks";
 import TokenListModal from "../token-list-modal/TokenListModal";
-import TokenSelectorButton from "../TokenSelectorButton";
 import { Token } from "@/lib/interfaces/tokensList";
 import ToBuyTokenSelectorButton from "../ToBuyTokenSelectorButton";
 

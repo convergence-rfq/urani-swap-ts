@@ -8,7 +8,10 @@ import EveryTime from "./EveryTime";
 import PriceRange from "./PriceRange";
 import SubmitButton from "../swap/SubmitButton";
 import { useSubmitLimitOrder } from "@/hooks/useSubmitLimitOrder";
-export default function DcaForm() {
+interface SwapTradeFormProps {
+    typeSelected: string;  // Expected prop: 'typeSelected' of type string
+  }
+export default function DcaForm({typeSelected}:SwapTradeFormProps) {
     const {
         sellAmount,
         setSellAmount,
@@ -32,6 +35,7 @@ export default function DcaForm() {
                     setSelectedToken={setSellSelectedToken}
                     selectedToken={sellSelectedToken}
                     tokenToUSDPrice={sellingTokenToUSD}
+                    typeSelected={typeSelected}
                 />
                  <InverterButton
                         onInvert={invertAmounts}

@@ -9,9 +9,10 @@ import ToBuy from "../dca/ToBuy";
 import VaTimeDate from "./VaTimeDate";
 interface AutoSetting {
     autoSelected: string;
+    typeSelected:string;
     setAutoSelected: (tab: "auto" | "manually") => void;
   }
-export default function VaForm({autoSelected,setAutoSelected}:AutoSetting) {
+export default function VaForm({autoSelected,setAutoSelected,typeSelected}:AutoSetting) {
   const {
     sellAmount,
     setSellAmount,
@@ -38,6 +39,7 @@ export default function VaForm({autoSelected,setAutoSelected}:AutoSetting) {
             setSelectedToken={setSellSelectedToken}
             selectedToken={sellSelectedToken}
             tokenToUSDPrice={sellingTokenToUSD}
+            typeSelected={typeSelected}
           />
           <div className="px-2 rounded-lg text-xs flex items-center space-x-2 text-[#F04A44] mt-1">
             <div className="h-3 w-3 fill-current">

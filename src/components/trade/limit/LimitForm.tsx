@@ -12,8 +12,11 @@ import { useInvertAmounts } from "@/hooks/useInvertAmounts";
 import useMarketPrices from "@/hooks/useMarketPrices";
 import { useSubmitLimitOrder } from "@/hooks/useSubmitLimitOrder";
 import { useSwap } from "../swap/SwapProvider";
+interface SwapTradeFormProps {
+  typeSelected: string;  // Expected prop: 'typeSelected' of type string
+}
 
-export default function LimitForm() {
+export default function LimitForm({typeSelected}: SwapTradeFormProps) {
   const {
     sellAmount,
     setSellAmount,
@@ -72,6 +75,7 @@ export default function LimitForm() {
     /> 
   ) : (
     <div className="w-full h-full flex flex-col gap-4">
+      <div>
       <TokenSelector
         label="Sell Amount"
         inputValue={sellAmount}
@@ -79,7 +83,10 @@ export default function LimitForm() {
         setSelectedToken={setSellSelectedToken}
         selectedToken={sellSelectedToken}
         tokenToUSDPrice={sellingTokenToUSD}
+        typeSelected={typeSelected}
       />
+      
+      </div>
        <InverterButton
         onInvert={invertAmounts}
         icon="arrow_downward"
@@ -101,6 +108,7 @@ export default function LimitForm() {
           setSelectedToken={setBuySelectedToken}
           selectedToken={buySelectedToken}
           tokenToUSDPrice={buyingTokenToUSD}
+          typeSelected={typeSelected}
         />
         <SelectTime setExpireTime={setExpireTime} expireTime={expireTime} />
       </div>
