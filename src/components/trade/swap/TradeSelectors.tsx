@@ -29,7 +29,6 @@ export default function TradeSelectors({
   } = useSwap();
 
   const invertAmounts = useInvertAmounts();
-
   return (
     <>
       <div className="mb-1 mt-4">

@@ -33,8 +33,9 @@ interface CustomTooltipProps {
   label?: string;
 }
 interface SwapTradeFormProps {
-  typeSelected: string; // Expected prop: 'typeSelected' of type string
+  typeSelected: string; 
 }
+
 
 const data: DataPoint[] = [
   { name: "10:00 AM", uv: 0 },
@@ -120,6 +121,17 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
     buySelectedToken,
     Number(throttledAmount),
   );
+  console.log(sellSelectedToken);
+  console.log("sellSelectedToken",sellSelectedToken?.logoURI);
+
+  const truncateText = (text:string | null | undefined, startChars = 5, endChars = 4) => {
+    if (!text || text.length <= startChars + endChars) {
+      return text; // Return full text if it's shorter than the combined start and end chars
+    }
+    const start = text.substring(0, startChars);
+    const end = text.substring(text.length - endChars);
+    return `${start}...${end}`;
+  };
 
   useEffect(() => {
     if (outputAmount) {
@@ -315,8 +327,8 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fill-rule="evenodd"
-                clip-rule="evenodd"
+                fillRule="evenodd"
+                clipRule="evenodd"
                 d="M0.292893 0.292893C0.683416 -0.097631 1.31658 -0.097631 1.7071 0.292893L4.99999 3.58579L8.29288 0.292893C8.6834 -0.0976311 9.31657 -0.0976311 9.70709 0.292893C10.0976 0.683417 10.0976 1.31658 9.70709 1.70711L5.7071 5.70711C5.31657 6.09763 4.68341 6.09763 4.29289 5.70711L0.292893 1.70711C-0.0976309 1.31658 -0.0976309 0.683417 0.292893 0.292893Z"
                 fill="currentColor"
               ></path>
@@ -395,7 +407,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                 style={{ flex: "0 0 auto" }}
               >
                 <Image
-                  src="/assets/solana-bg-black.webp"
+                  src={sellSelectedToken?.logoURI  || '/default-logo.png'}
                   alt="SOL"
                   width={24}
                   height={24}
@@ -404,15 +416,15 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
               <div className="flex flex-col">
                 <div className="flex items-center space-x-3">
                   <span className="text-sm font-semibold text-white/75">
-                    SOL
+                    {sellSelectedToken?.symbol}
                   </span>
                   <a
                     target="_blank"
                     rel="noreferrer"
                     className="flex cursor-pointer items-center space-x-1 rounded bg-black/25 px-2 py-0.5 text-white/75"
-                    href="https://ape.pro/solana/So11111111111111111111111111111111111111112"
+                    href={sellSelectedToken?.address || '/'}
                   >
-                    <div className="text-[9px]">So111...11112</div>
+                    <div className="text-[9px]">{truncateText(sellSelectedToken?.address)}</div>
                     <svg
                       width="10"
                       height="10"
@@ -455,7 +467,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                   </a>
                 </div>
                 <span className="text-ellipsis text-xs text-white/50">
-                  Wrapped SOL
+                  {sellSelectedToken?.name}
                 </span>
               </div>
             </div>
@@ -468,10 +480,10 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                   -11.08%
                 </span>
               </div>
-              <div className="w-full items-center relative">
-                <ResponsiveContainer width={256} height={50}>
-                  <LineChart
+              <div className="w-full h-14 items-center relative">
+              <LineChart
                     data={data}
+                    width={256} height={50}
                     margin={{
                       top: 10,
                       right: 0, // Adjust as needed
@@ -512,7 +524,6 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                       dot={false}
                     />
                   </LineChart>
-                </ResponsiveContainer>
               </div>
             </div>
           </div>
@@ -523,7 +534,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                 style={{ flex: "0 0 auto" }}
               >
                 <Image
-                  src="/assets/solana-bg-black.webp"
+                  src={buySelectedToken?.logoURI || '/default-logo.png'}
                   alt="SOL"
                   width={24}
                   height={24}
@@ -532,7 +543,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
               <div className="flex flex-col">
                 <div className="flex items-center space-x-3">
                   <span className="text-sm font-semibold text-white/75">
-                    SOL
+                    {buySelectedToken?.symbol}
                   </span>
                   <a
                     target="_blank"
@@ -540,7 +551,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                     className="flex cursor-pointer items-center space-x-1 rounded bg-black/25 px-2 py-0.5 text-white/75"
                     href="https://ape.pro/solana/So11111111111111111111111111111111111111112"
                   >
-                    <div className="text-[9px]">So111...11112</div>
+                    <div className="text-[9px]">{truncateText(buySelectedToken?.address)}</div>
                     <svg
                       width="10"
                       height="10"
@@ -583,7 +594,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                   </a>
                 </div>
                 <span className="text-ellipsis text-xs text-white/50">
-                  Wrapped SOL
+                {buySelectedToken?.name}
                 </span>
               </div>
             </div>
