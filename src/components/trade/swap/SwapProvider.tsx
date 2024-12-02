@@ -85,9 +85,11 @@ export function SwapProvider({ children }: PropsWithChildren) {
   const [sellAmount, setSellAmount] = useState<string | number>("");
   const [buyAmount, setBuyAmount] = useState<string | number>("");
   const [sellSelectedToken, setSellSelectedToken] = useState<Token | null>(
-    tokenList[0] as Token,
+    tokenList[1] as Token,
   );
-  const [buySelectedToken, setBuySelectedToken] = useState<Token | null>(null);
+  const [buySelectedToken, setBuySelectedToken] = useState<Token | null>(
+    tokenList[0] as Token
+  );
   const [minReceived, setMinReceived] = useState<string | number>("");
   const [expireTime, setExpireTime] = useState<string | null>("1|d");
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("INCOMPLETE");
