@@ -22,14 +22,16 @@ export default async function Home() {
   const env = await fetchEnvVars();
 
   return (
-    <div className="flex flex-col justify-between min-h-screen aaa">
+    <div className="flex flex-col justify-between min-h-screen aaa bg-[#1c2936] space-y-4">
       <Header />
       <main className="flex items-center justify-center">
-        <EnvProvider env={env}>
-          <SwapProvider>
-            <SwapWidget />
-          </SwapProvider>
-        </EnvProvider>
+        <div className="flex flex-1 flex-col items-center justify-center px-4 lg:pt-16 w-full sm:max-w-lg lg:max-w-7xl">
+          <EnvProvider env={env}>
+            <SwapProvider>
+              <SwapWidget />
+            </SwapProvider>
+          </EnvProvider>
+        </div>
       </main>
       <Footer />
     </div>

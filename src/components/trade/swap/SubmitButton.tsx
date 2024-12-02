@@ -31,8 +31,8 @@ export default function SubmitButton({
     if (!connected)
       return (
         <UnifiedWalletButton
-          buttonClassName="w-full rounded-xl px-4 py-3 text-lg h-auto bg-cyan text-black shadow-md wallet-connect-button"
-          currentUserClassName="w-full rounded-xl px-4 py-3 text-lg font-bold h-auto bg-cyan text-black shadow-md wallet-connect-button"
+          buttonClassName="w-full rounded-xl px-4 py-5 text-lg h-auto bg-[#c7f2821a] text-[#c7f284] shadow-md wallet-connect-button"
+          currentUserClassName="rounded-xl bg-[#c7f2821a] bg-clip-text text-[#c7f284] group-disabled:bg-none group-disabled:text-[#CFF3FF] group-disabled:text-opacity-25 py-5 text-lg font-medium leading-none wallet-connect-button"
         />
       );
     if (connected && !sellAmount)

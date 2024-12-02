@@ -10,7 +10,7 @@ import WalletConnectionButton from "../wallet-connect/WalletConnectionButton";
 const customTheme: CustomFlowbiteTheme = {
   navbar: {
     root: {
-      base: "sticky top-0 flex z-50 justify-center w-full text-sm p-5",
+      base: "sticky top-0 flex z-50 justify-center bg-[#131c25] w-full text-sm p-3",
       rounded: {
         on: "rounded",
         off: "",
@@ -104,21 +104,22 @@ export default function Header() {
           </Navbar.Brand>
           <Navbar.Toggle />
           <Navbar.Collapse>
-            <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
+            <div className="relative text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
               <Navbar.Link as={Link} href="/">
-                <div className="relative group text-white font-medium text-xl">
+                <div className="relative group text-[#e8f9ffbf] hover:text-[#c7f284] font-medium text-xl">
                   <span>Swap</span>
-                  <Underscore />
+                  {/* <Underscore /> */}
                 </div>
               </Navbar.Link>
               <Underscore />
             </div>
 
-            <div className="relative group text-purple font-bold text-2xl py-2 pl-3 pr-4 md:p-0">
+            <div className="relative text-purple font-bold aaa text-2xl py-2 pl-3 pr-4 md:p-0">
+
               <Navbar.Link as={Link} href="/dashboard">
-                <div className="relative group text-white font-medium text-xl">
+                <div className="relative group text-[#e8f9ffbf]  hover:text-[#c7f284] font-medium text-xl">
                   <span>Dashboard</span>
-                  <Underscore />
+                  {/* <Underscore /> */}
                 </div>
               </Navbar.Link>
               <Underscore />
@@ -136,7 +137,9 @@ export default function Header() {
 
             <div className="grow"></div>
 
-            <WalletConnectionButton />
+            <div className="bg-[#e8f9ff0d] rounded-full">
+              <WalletConnectionButton />
+            </div>
           </Navbar.Collapse>
         </Navbar>
       </Flowbite>

@@ -1,7 +1,7 @@
 import { UnifiedWalletButton } from "@jup-ag/wallet-adapter";
 
 const classes =
-  "rounded-3xl px-8 py-3 h-auto bg-cyan text-[#3E3172] shadow-md text-lg wallet-connect-button"; // Removed the border classes
+  "rounded-xl bg-v2-text-gradient bg-clip-text text-transparent group-disabled:bg-none group-disabled:text-[#CFF3FF] group-disabled:text-opacity-25 p-[calc(2rem-1px)] py-3 text-sm font-semibold leading-none wallet-connect-button"; // Removed the border classes
 
 export default function WalletConnectionButton() {
   return (
