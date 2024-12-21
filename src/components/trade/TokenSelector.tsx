@@ -5,6 +5,8 @@ import TokenSelectorButton from "./TokenSelectorButton";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
 import { useConvergenceTokens } from '@/hooks/useConvergenceTokens';
+import DOMPurify from "dompurify";
+import { isValidNumber } from "@/lib/utils/validation";
 
 interface TokenSelectorProps {
   inputValue: string | number;
@@ -20,6 +22,20 @@ interface TokenSelectorProps {
   otherToken?: Token | TokenWithBalance | null;
   setOtherToken?: (token: Token | TokenWithBalance | null) => void;
 }
+
+// Add input validation
+const validateInput = (value: string): boolean => {
+  // Only allow numbers and decimals
+  return /^[0-9]*\.?[0-9]*$/.test(value) && isValidNumber(value);
+};
+
+// Add sanitization
+const sanitizeInput = (value: string): string => {
+  return DOMPurify.sanitize(value, {
+    ALLOWED_TAGS: [], // No HTML allowed
+    ALLOWED_ATTR: [] // No attributes allowed
+  });
+};
 
 export default function TokenSelector({
   inputValue,

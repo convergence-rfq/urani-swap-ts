@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { Token, TokenWithBalance } from '@/lib/interfaces/tokensList';
+import { sanitizeInput, validateAmount, sanitizeAddress } from '@/lib/utils/validation';
 
 interface ConvergenceQuoteResponse {
   quote: string;
@@ -74,20 +75,20 @@ export default function useConvergenceQuotes(
   const [quoteData, setQuoteData] = useState<ConvergenceQuoteResponse | null>(null);
 
   const getQuote = useCallback(async () => {
-    if (!sellSelectedToken?.address || !buySelectedToken?.address || !amount || amount <= 0) {
-      setQuote('');
-      setOutputAmount('');
-      return;
+    if (!sellSelectedToken?.address || !buySelectedToken?.address) return;
+    
+    const amount = sanitizeInput(amount.toString());
+    if (!validateAmount(amount)) {
+      throw new Error("Invalid amount");
     }
 
     try {
       setIsLoading(true);
       const params = new URLSearchParams({
-        inputMint: sellSelectedToken.address,
-        outputMint: buySelectedToken.address,
-        amount: amount.toString(),
-        slippage: '0.5',
-        feeBps: '0'
+        inputMint: sanitizeAddress(sellSelectedToken.address),
+        outputMint: sanitizeAddress(buySelectedToken.address),
+        amount: amount,
+        slippage: '0.5'
       });
 
       const response = await fetch(

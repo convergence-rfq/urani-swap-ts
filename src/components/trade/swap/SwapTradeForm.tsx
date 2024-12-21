@@ -28,6 +28,7 @@ import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token
 import { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
 import Toast from '@/components/utils/Toast';
 import useConvergenceQuotes from "@/hooks/useConvergenceQuotes";
+import { sanitizeInput, validateInput, validateAmount } from "@/lib/utils/validation";
 
 
 interface RouterQuote {
@@ -378,6 +379,13 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
       setOrderStatus("INCOMPLETE");
     }
   }, [wallet, handleTransaction, quoteData, sellAmount, sellSelectedToken, buySelectedToken]);
+
+  const handleAmountChange = (value: string) => {
+    const sanitized = sanitizeInput(value);
+    if (validateInput(sanitized) && validateAmount(sanitized)) {
+      setSellAmount(sanitized);
+    }
+  };
 
   // Only show TransactionMessage for PENDING state
   if (orderStatus === "PENDING") {

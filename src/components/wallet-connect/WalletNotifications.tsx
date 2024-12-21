@@ -1,17 +1,29 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { notifications } from '@mantine/notifications';
+import type { ReactNode } from "react";
+import { notifications } from "@mantine/notifications";
+import { useEffect, useState } from "react";
+import { useWallet } from "@solana/wallet-adapter-react";
 
 const notificationStyles = {
-  root: "bg-black rounded-xl min-w-[320px] p-4",
-  title: "text-white text-xl font-semibold",
-  description: "text-gray-400 mt-1",
-  closeButton: "text-gray-400 hover:text-white absolute top-4 right-4",
+  root: "!bg-black !rounded-xl !min-w-[320px] !p-4 !border-none",
+  title: "!text-white !text-xl !font-semibold !mb-1",
+  description: "!text-gray-400",
+  closeButton: {
+    color: "#fff",
+    "&:hover": { backgroundColor: "transparent" }
+  }
 };
 
-export default function WalletNotifications() {
+const CheckIcon = () => (
+  <div className="w-8 h-8 rounded-full bg-[#00ffa3] flex items-center justify-center">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M6.66674 10.1147L12.7947 3.98599L13.7381 4.92866L6.66674 12L2.42407 7.75733L3.36674 6.81466L6.66674 10.1147Z" fill="black"/>
+    </svg>
+  </div>
+);
+
+export default function WalletNotifications(): JSX.Element | null {
   const { connected, disconnecting, connecting, publicKey } = useWallet();
   const [mounted, setMounted] = useState(false);
 
@@ -20,63 +32,55 @@ export default function WalletNotifications() {
   }, []);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !connecting) return;
 
-    if (connecting) {
-      notifications.show({
-        title: 'Connecting Wallet',
-        message: 'Please approve the connection in your wallet',
-        loading: true,
-        classNames: notificationStyles,
-        styles: {
-          root: { background: '#000000' },
-          loader: { color: '#c7f284' }
-        },
-        autoClose: 3000
-      });
-    }
+    notifications.show({
+      title: "Connecting Wallet",
+      message: "Please approve the connection in your wallet",
+      loading: true,
+      classNames: notificationStyles,
+      styles: {
+        root: { backgroundColor: 'black' },
+        loader: { color: '#00ffa3' }
+      },
+      autoClose: 3000,
+    });
   }, [connecting, mounted]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !connected || !publicKey) return;
 
-    if (connected && publicKey) {
-      notifications.show({
-        title: 'Wallet Connected',
-        message: (
-          <div>
-            <div className="text-gray-400">Connected to wallet {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}</div>
-            <div className="text-[#c7f284]">Auto Confirm is available on Phantom.</div>
+    notifications.show({
+      title: "Wallet Connected",
+      message: (
+        <div>
+          <div className="text-gray-400">
+            Connected to wallet {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
           </div>
-        ),
-        classNames: notificationStyles,
-        styles: {
-          root: { background: '#000000' }
-        },
-        icon: (
-          <div className="w-8 h-8 rounded-full bg-[#c7f284] flex items-center justify-center">
-            <span className="material-symbols-rounded text-black">check</span>
-          </div>
-        ),
-        autoClose: 3000
-      });
-    }
+          <div className="text-[#00ffa3]">Auto Confirm is available on Phantom.</div>
+        </div>
+      ),
+      classNames: notificationStyles,
+      styles: {
+        root: { backgroundColor: 'black' }
+      },
+      icon: <CheckIcon />,
+      autoClose: 3000,
+    });
   }, [connected, publicKey, mounted]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (!mounted || !disconnecting) return;
 
-    if (disconnecting) {
-      notifications.show({
-        title: 'Wallet Disconnected',
-        message: 'Your wallet has been disconnected',
-        classNames: notificationStyles,
-        styles: {
-          root: { background: '#000000' }
-        },
-        autoClose: 3000
-      });
-    }
+    notifications.show({
+      title: "Wallet Disconnected",
+      message: "Your wallet has been disconnected",
+      classNames: notificationStyles,
+      styles: {
+        root: { backgroundColor: 'black' }
+      },
+      autoClose: 3000,
+    });
   }, [disconnecting, mounted]);
 
   if (!mounted) return null;
