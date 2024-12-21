@@ -1,89 +1,63 @@
 import { useCallback, useEffect, useState } from "react";
+import { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
 
-import { OrderStatus } from "@/lib/interfaces/OrderStatus";
-import { Token } from "@/lib/interfaces/tokensList";
-
-interface QuoteOrder {
-  outAmount: string | null;
-
-  inAmount?: string;
-  inputMint?: string;
-  contextSlot?: number;
-  otherAmountThreshold?: string;
-  outputMint?: string;
-  platformFee?: null;
-  priceImpactPct?: string;
-  slippageBps?: number;
-  swapMode?: string;
-  timeTaken?: number;
-  error?: string;
+interface ConvergenceQuote {
+  quote: string;
+  outputAmount: string;
+  expectedPrice: number;
+  priceImpact: number;
+  totalFee: number;
 }
 
-interface Response {
-  quote?: QuoteOrder;
-  outputAmount: number | null;
-  isLoading: boolean;
-  error?: string;
-}
-
-const initialState = {
-  outputAmount: null,
-  isLoading: false,
-};
-
-export default function useJupiterQuotes(
+export default function useConvergenceQuotes(
   setErrorMessage: (message: string) => void,
-  setOrderStatus: (status: OrderStatus) => void,
-  sellingToken?: Token | null,
-  buyingToken?: Token | null,
-  currentAmount?: number,
+  setOrderStatus: (status: string) => void,
+  sellSelectedToken: Token | TokenWithBalance | null,
+  buySelectedToken: Token | TokenWithBalance | null,
+  amount: number,
 ) {
-  const [quoteResponse, setQuoteResponse] = useState<Response>(initialState);
-  const [outputAmount, setOutputAmount] = useState<number | null>(null);
+  const [quote, setQuote] = useState<string>('');
+  const [outputAmount, setOutputAmount] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const getQuote = useCallback(async () => {
-    if (!sellingToken || !buyingToken || !currentAmount) return;
-
-    if (isNaN(currentAmount) || currentAmount <= 0) {
+    if (!sellSelectedToken?.address || !buySelectedToken?.address || !amount || amount <= 0) {
+      setQuote('');
+      setOutputAmount('');
       return;
     }
 
-    setQuoteResponse({ ...initialState, isLoading: true });
-
-    const url = `https://quote-api.jup.ag/v6/quote?inputMint=${sellingToken?.address}&outputMint=${buyingToken?.address}&amount=${currentAmount * Math.pow(10, sellingToken?.decimals)}&slippage=0.5`;
-
-    const quote = await (await fetch(url)).json();
-
-    if (quote.error) {
-      setOrderStatus("ERROR");
-      setErrorMessage(
-        quote.errorCode === "TOKEN_NOT_TRADABLE"
-          ? "This token is not tradable."
-          : quote.error,
-      );
-      return setQuoteResponse({
-        ...quoteResponse,
-        isLoading: false,
+    try {
+      setIsLoading(true);
+      const response = await fetch('https://api.trade.convergence.so/router/quote', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tokenX: sellSelectedToken.address,
+          tokenY: buySelectedToken.address,
+          amountIn: amount.toString(),
+        }),
       });
+
+      const data = await response.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setQuote(data.quote);
+      setOutputAmount(data.outputAmount);
+      setOrderStatus("INCOMPLETE");
+    } catch (error) {
+      console.error('Error fetching quote:', error);
+      setErrorMessage((error as Error).message || "Failed to get quote");
+      setOrderStatus("ERROR");
+    } finally {
+      setIsLoading(false);
     }
-    if (quote && quote.outAmount) {
-      const outAmountNumber =
-        Number(quote.outAmount) / Math.pow(10, buyingToken.decimals);
-      setOutputAmount(outAmountNumber);
-    }
+  }, [sellSelectedToken?.address, buySelectedToken?.address, amount, setErrorMessage, setOrderStatus]);
 
-    setQuoteResponse({
-      ...quoteResponse,
-      quote,
-      outputAmount,
-      isLoading: false,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [buyingToken, sellingToken, currentAmount, outputAmount]);
-
-  useEffect(() => {
-    getQuote();
-  }, [getQuote]);
-
-  return quoteResponse;
+  return { quote, outputAmount, isLoading, getQuote };
 }

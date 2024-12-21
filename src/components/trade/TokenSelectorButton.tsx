@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { Token } from "@/lib/interfaces/tokensList";
+import { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
 
 interface TokenSelectorButtonProps {
   onClick: () => void;
-  token: Token | null;
+  token: (Token | TokenWithBalance | null);
 }
 
 export default function TokenSelectorButton({

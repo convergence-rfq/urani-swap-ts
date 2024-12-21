@@ -10,7 +10,7 @@ export default function WidgetTabs({
   return (
     <>
     <div className="flex w-full font-medium cursor-pointer text-xl mb-4 justify-between">
-      <div className="flex rounded-[60px] border-solid border-[1px] border-[#202629] w-[100%]">
+      <div className="flex rounded-[60px]">
         {/* custom bg gradient */}
         <div className="hidden w-full items-center space-x-1 lg:flex lg:space-x-2 justify-between">
           <div className={`flex w-full items-center justify-center space-x-1 overflow-hidden rounded-full bg-[#131B24]/50 p-1 min-h-[30px] ${selectedTab === "market" && 'lg:w-auto'}`}>
@@ -28,7 +28,7 @@ export default function WidgetTabs({
             >
               Market
             </div>
-            <div
+            {/* <div
               className={` flex w-auto items-center justify-center rounded-full px-1 py-2 text-center text-sm font-semibold lg:min-w-[70px] lg:px-4 lg:py-3  ${
                 selectedTab === "limit"
                   ? "text-[#c7f284] bg-[#c7f2821a]"
@@ -64,7 +64,7 @@ export default function WidgetTabs({
               onClick={() => setSelectedTab("va")}
             >
               VA
-            </div>
+            </div> */}
           </div>
           {
             selectedTab === "market" && <>
