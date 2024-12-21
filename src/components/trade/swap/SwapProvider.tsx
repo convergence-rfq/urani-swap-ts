@@ -7,11 +7,15 @@ import {
   useContext,
   useMemo,
   useState,
+  useEffect,
 } from "react";
 
 import { OrderStatus } from "@/lib/interfaces/OrderStatus";
 import { Token } from "@/lib/interfaces/tokensList";
-import { useTokenList } from "@/hooks/useTokenList";
+import { tokenList } from "@/lib/tokenlist";
+import { useWallet, useConnection } from "@solana/wallet-adapter-react";
+import { PublicKey } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 interface SwapContextProps {
   sellAmount: string | number;
@@ -80,21 +84,68 @@ const initialValue = {
 const SwapContext = createContext<SwapContextProps>(initialValue);
 
 export function SwapProvider({ children }: PropsWithChildren) {
-  const tokenList = useTokenList();
-
+  const wallet = useWallet();
+  const { connection } = useConnection();
   const [sellAmount, setSellAmount] = useState<string | number>("");
   const [buyAmount, setBuyAmount] = useState<string | number>("");
-  const [sellSelectedToken, setSellSelectedToken] = useState<Token | null>(
-    tokenList[1] as Token,
-  );
-  const [buySelectedToken, setBuySelectedToken] = useState<Token | null>(
-    tokenList[0] as Token
-  );
+  const [sellSelectedToken, setSellSelectedToken] = useState<Token | null>(null);
+  const [buySelectedToken, setBuySelectedToken] = useState<Token | null>(null);
   const [minReceived, setMinReceived] = useState<string | number>("");
   const [expireTime, setExpireTime] = useState<string | null>("1|d");
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("INCOMPLETE");
   const [solscanUrl, setSolscanUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const getTokenBalance = async (token: Token): Promise<number> => {
+    if (!wallet.publicKey) return 0;
+    
+    try {
+      if (token.symbol === 'SOL') {
+        const balance = await connection.getBalance(wallet.publicKey);
+        return balance / 1e9;
+      }
+
+      const tokenMint = new PublicKey(token.address);
+      const tokenAccounts = await connection.getTokenAccountsByOwner(wallet.publicKey, {
+        mint: tokenMint,
+      });
+
+      if (tokenAccounts.value.length > 0) {
+        const balance = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
+        return Number(balance.value.uiAmount);
+      }
+      return 0;
+    } catch (error) {
+      console.error('Error getting token balance:', error);
+      return 0;
+    }
+  };
+
+  const getDifferentToken = (currentToken: Token | null) => {
+    if (!currentToken) return tokenList[0] || null;
+    return tokenList.find(t => t.address !== currentToken.address) || tokenList[0] || null;
+  };
+
+  const handleSellTokenSelect = (token: Token | null) => {
+    setSellSelectedToken(token);
+    if (token && buySelectedToken && token.address === buySelectedToken.address) {
+      setBuySelectedToken(getDifferentToken(token));
+    }
+  };
+
+  const handleBuyTokenSelect = (token: Token | null) => {
+    setBuySelectedToken(token);
+    if (token && sellSelectedToken && token.address === sellSelectedToken.address) {
+      setSellSelectedToken(getDifferentToken(token));
+    }
+  };
+
+  useEffect(() => {
+    if (tokenList.length >= 2) {
+      setSellSelectedToken(tokenList[0]);
+      setBuySelectedToken(tokenList[1]);
+    }
+  }, []);
 
   const resetAll = useCallback(() => {
     setSellAmount("");
@@ -115,9 +166,9 @@ export function SwapProvider({ children }: PropsWithChildren) {
       buyAmount,
       setBuyAmount,
       sellSelectedToken,
-      setSellSelectedToken,
+      setSellSelectedToken: handleSellTokenSelect,
       buySelectedToken,
-      setBuySelectedToken,
+      setBuySelectedToken: handleBuyTokenSelect,
       minReceived,
       setMinReceived,
       expireTime,

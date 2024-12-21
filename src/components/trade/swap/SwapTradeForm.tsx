@@ -27,6 +27,7 @@ import { PublicKey } from "@solana/web3.js";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
 import Toast from '@/components/utils/Toast';
+import useConvergenceQuotes from "@/hooks/useConvergenceQuotes";
 
 
 interface RouterQuote {
@@ -228,12 +229,18 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
         balance = await connection.getBalance(wallet.publicKey) / 10 ** 9;
       } else {
         const tokenAddress = new PublicKey(token.address);
-        const ata = PublicKey.findProgramAddressSync(
-          [wallet.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenAddress.toBuffer()],
-          ASSOCIATED_TOKEN_PROGRAM_ID
-        )[0];
-        const tokenBalance = await connection.getTokenAccountBalance(ata);
-        balance = Number(tokenBalance.value.uiAmount);
+        // First check if account exists
+        const accounts = await connection.getTokenAccountsByOwner(wallet.publicKey, {
+          mint: tokenAddress,
+        });
+
+        if (accounts.value.length > 0) {
+          const tokenBalance = await connection.getTokenAccountBalance(accounts.value[0].pubkey);
+          balance = Number(tokenBalance.value.uiAmount);
+        } else {
+          // Account doesn't exist, balance is 0
+          balance = 0;
+        }
       }
 
       balanceCache.set(cacheKey, balance);
@@ -315,6 +322,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
     const signature = await connection.sendRawTransaction(signed.serialize(), {
       skipPreflight: true,
       maxRetries: 2,
+      preflightCommitment: 'confirmed'
     });
     
     await connection.confirmTransaction({
@@ -645,17 +653,19 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                 <div className="w-full h-14 items-center relative">
                 <LineChart
                       data={data}
-                      width={256} height={50}
+                      width={256} 
+                      height={50}
+                      id="sell-token-chart"
                       margin={{
                         top: 10,
-                        right: 0, // Adjust as needed
-                        bottom: 0, // Adjust as needed
-                        left: 0, // Adjust as needed
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
                       }}
                     >
                       <defs>
                         <linearGradient
-                          id="gradient1"
+                          id="gradient-sell"
                           x1="0%"
                           y1="0%"
                           x2="100%"
@@ -669,21 +679,20 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                           />
                         </linearGradient>
                       </defs>
-                      {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                      <XAxis dataKey="name" tick={false} axisLine={false} />
-                      <YAxis tick={false} axisLine={false} />
+                      <XAxis dataKey="name" tick={false} axisLine={false} strokeDasharray="0 0" />
+                      <YAxis tick={false} axisLine={false} strokeDasharray="0 0" />
                       <Tooltip
                         content={<CustomTooltip />}
                         position={{ x: 240, y: 0 }}
                         cursor={false}
                       />
-                      {/* <Legend /> */}
                       <Line
                         type="monotone"
                         dataKey="uv"
-                        stroke="url(#gradient1)"
+                        stroke="url(#gradient-sell)"
                         strokeWidth={2}
                         dot={false}
+                        strokeDasharray="0 0"
                       />
                     </LineChart>
                 </div>
@@ -770,52 +779,50 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
                   </span>
                 </div>
                 <div className="flex w-full items-center relative">
-                  <ResponsiveContainer width={256} height={50}>
-                    <LineChart
-                      width={256}
-                      height={30}
-                      data={data}
-                      margin={{
-                        top: 10,
-                        right: 10, // Adjust as needed
-                        bottom: 0, // Adjust as needed
-                        left: 10, // Adjust as needed
-                      }}
-                    >
-                      <defs>
-                        <linearGradient
-                          id="gradient2"
-                          x1="0%"
-                          y1="0%"
-                          x2="100%"
-                          y2="0%"
-                        >
-                          <stop offset="0%" stopColor="#E4BA21" stopOpacity={1} />
-                          <stop
-                            offset="100%"
-                            stopColor="#4FB4DE"
-                            stopOpacity={1}
-                          />
-                        </linearGradient>
-                      </defs>
-                      {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                      <XAxis dataKey="name" tick={false} axisLine={false} />
-                      <YAxis tick={false} axisLine={false} />
-                      <Tooltip
-                        content={<CustomTooltip />}
-                        position={{ x: 240, y: 0 }}
-                        cursor={false}
-                      />
-                      {/* <Legend /> */}
-                      <Line
-                        type="monotone"
-                        dataKey="uv"
-                        strokeWidth={2}
-                        stroke="url(#gradient2)"
-                        dot={false}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                  <LineChart
+                    width={256}
+                    height={50}
+                    data={data}
+                    id="buy-token-chart"
+                    margin={{
+                      top: 10,
+                      right: 0,
+                      bottom: 0,
+                      left: 0,
+                    }}
+                  >
+                    <defs>
+                      <linearGradient
+                        id="gradient-buy"
+                        x1="0%"
+                        y1="0%"
+                        x2="100%"
+                        y2="0%"
+                      >
+                        <stop offset="0%" stopColor="#E4BA21" stopOpacity={1} />
+                        <stop
+                          offset="100%"
+                          stopColor="#4FB4DE"
+                          stopOpacity={1}
+                        />
+                      </linearGradient>
+                    </defs>
+                    <XAxis dataKey="name" tick={false} axisLine={false} strokeDasharray="0 0" />
+                    <YAxis tick={false} axisLine={false} strokeDasharray="0 0" />
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      position={{ x: 240, y: 0 }}
+                      cursor={false}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="uv"
+                      strokeWidth={2}
+                      stroke="url(#gradient-buy)"
+                      dot={false}
+                      strokeDasharray="0 0"
+                    />
+                  </LineChart>
                 </div>
               </div>
             </div>

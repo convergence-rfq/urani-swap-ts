@@ -4,6 +4,7 @@ import TokenListModal from "./token-list-modal/TokenListModal";
 import TokenSelectorButton from "./TokenSelectorButton";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
+import { useConvergenceTokens } from '@/hooks/useConvergenceTokens';
 
 interface TokenSelectorProps {
   inputValue: string | number;
@@ -94,6 +95,8 @@ export default function TokenSelector({
       setSelectedToken(token);
     }
   };
+
+  const { tokens, isLoading: tokensLoading } = useConvergenceTokens();
 
   return (
     <>

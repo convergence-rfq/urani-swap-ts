@@ -1,51 +1,36 @@
 "use client";
 
-import {
-  ConnectionProvider,
-  UnifiedWalletProvider,
-} from "@jup-ag/wallet-adapter";
-import React, { useMemo } from "react";
-
+import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import { useMemo } from "react";
+import { Connection, Commitment } from "@solana/web3.js";
 import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import WalletNotification from "./WalletNotification";
-import { clusterApiUrl } from "@solana/web3.js";
 
-export default function AppWalletProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const network = WalletAdapterNetwork[process.env.NEXT_PUBLIC_SOLANA_NETWORK];
-  const endpoint = useMemo(() => {
-    if (process.env.NEXT_PUBLIC_SOLANA_NETWORK === "Mainnet")
-      return `https://mainnet.helius-rpc.com/?api-key=${process.env.NEXT_PUBLIC_HELIUS_API_KEY}`;
-    return clusterApiUrl(network);
-  }, [network]);
+// Use environment variables
+const HELIUS_RPC = {
+  http: process.env.NEXT_PUBLIC_HELIUS_RPC_URL!,
+  ws: process.env.NEXT_PUBLIC_HELIUS_RPC_WS!,
+  network: WalletAdapterNetwork.Devnet
+};
+
+require('@solana/wallet-adapter-react-ui/styles.css');
+
+export default function AppWalletProvider({ children }: { children: React.ReactNode }) {
+  const connectionConfig = {
+    commitment: 'confirmed' as Commitment,
+    wsEndpoint: HELIUS_RPC.ws,
+    disableRetryOnRateLimit: true
+  };
 
   const wallets = useMemo(() => [], []);
 
   return (
-    <ConnectionProvider endpoint={endpoint}>
-      <UnifiedWalletProvider
-        wallets={wallets}
-        config={{
-          autoConnect: false,
-          env: network,
-          metadata: {
-            name: "Urani Swap",
-            description: "Urani Swap",
-            url: "https://urani.trade",
-            iconUrls: ["https://urani.trade/favicon.ico"],
-          },
-          walletlistExplanation: {
-            href: "https://station.jup.ag/docs/additional-topics/wallet-list",
-          },
-          notificationCallback: WalletNotification,
-          theme: "jupiter",
-        }}
-      >
-        {children}
-      </UnifiedWalletProvider>
+    <ConnectionProvider endpoint={HELIUS_RPC.http} config={connectionConfig}>
+      <WalletProvider wallets={wallets} autoConnect>
+        <WalletModalProvider>
+          {children}
+        </WalletModalProvider>
+      </WalletProvider>
     </ConnectionProvider>
   );
 }
