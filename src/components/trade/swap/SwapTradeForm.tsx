@@ -160,6 +160,10 @@ interface ConvergenceQuoteResponse {
   }>;
 }
 
+// Outside component - global cache
+const balanceCache = new Map<string, number>();
+const CACHE_DURATION = 30000; // 30 seconds
+
 export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
   const {
     sellAmount,
@@ -207,77 +211,71 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
 
   // Add a ref to track if we've fetched balances
   const balancesFetched = useRef(false);
+  const initialLoadDone = useRef(false);
+  const lastQuoteTime = useRef(0);
 
-  // Optimize balance fetching
-  useEffect(() => {
-    const fetchBalances = async () => {
-      if (!wallet.connected || balancesFetched.current) return;
+  // Single balance fetch function
+  const getTokenBalance = useCallback(async (token: Token) => {
+    if (!wallet.connected || !wallet.publicKey || !token.address) return 0;
 
-      try {
-        // Fetch balances only once when wallet connects
-        if (sellSelectedToken) {
-          await getTokenBalance(sellSelectedToken);
-        }
-        if (buySelectedToken) {
-          await getTokenBalance(buySelectedToken);
-        }
-        balancesFetched.current = true;
-      } catch (error) {
-        console.error('Error fetching initial balances:', error);
-      }
-    };
+    const cacheKey = `${token.address}_${wallet.publicKey.toString()}`;
+    const cached = balanceCache.get(cacheKey);
+    if (cached !== undefined) return cached;
 
-    fetchBalances();
-  }, [wallet.connected]);
-
-  // Update getTokenBalance to use more aggressive caching
-  const getTokenBalance = async (token: Token) => {
     try {
-      const cacheKey = `${token.address}_${wallet.publicKey?.toString()}`;
-      const cached = balanceCache.get(cacheKey);
-      if (cached) return cached;
-
-      // Batch SOL and token balance requests
       let balance = 0;
       if (token.symbol === 'SOL') {
-        balance = await connection.getBalance(wallet.publicKey!) / 10 ** 9;
+        balance = await connection.getBalance(wallet.publicKey) / 10 ** 9;
       } else {
-        const tokenAddress = new PublicKey(token.address!);
+        const tokenAddress = new PublicKey(token.address);
         const ata = PublicKey.findProgramAddressSync(
-          [wallet.publicKey!.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenAddress.toBuffer()],
+          [wallet.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenAddress.toBuffer()],
           ASSOCIATED_TOKEN_PROGRAM_ID
         )[0];
-        
         const tokenBalance = await connection.getTokenAccountBalance(ata);
         balance = Number(tokenBalance.value.uiAmount);
       }
 
-      // Cache with longer expiry
       balanceCache.set(cacheKey, balance);
-      setTimeout(() => balanceCache.delete(cacheKey), 30000); // 30s cache
       return balance;
     } catch (error) {
-      console.error('Error in getTokenBalance:', error);
+      console.error('Error fetching balance:', error);
       return 0;
     }
-  };
+  }, [wallet.connected, wallet.publicKey, connection]);
 
-  // Add balance cache
-  const balanceCache = new Map<string, number>();
+  // Initial load
+  useEffect(() => {
+    if (!wallet.connected || initialLoadDone.current) return;
+    initialLoadDone.current = true;
+    
+    if (sellSelectedToken) {
+      getTokenBalance(sellSelectedToken);
+    }
+    if (buySelectedToken) {
+      getTokenBalance(buySelectedToken);
+    }
+  }, [wallet.connected]);
 
+  // Only fetch quote when amount changes and enough time has passed
   useEffect(() => {
     const updateQuote = async () => {
-      if (!sellSelectedToken?.address || !buySelectedToken?.address || !sellAmount || Number(sellAmount) <= 0) {
+      if (!sellSelectedToken?.address || !buySelectedToken?.address || 
+          !sellAmount || Number(sellAmount) <= 0) {
         setBuyAmount('0');
         return;
       }
 
+      // Throttle quote requests
+      const now = Date.now();
+      if (now - lastQuoteTime.current < 1000) return; // Min 1s between quotes
+      lastQuoteTime.current = now;
+
       try {
         setIsLoading(true);
-        // Build query parameters for GET request
         const params = new URLSearchParams({
-          inToken: sellSelectedToken.address,
-          outToken: buySelectedToken.address,
+          inputMint: sellSelectedToken.address,
+          outputMint: buySelectedToken.address,
           amount: Number(sellAmount).toString(),
           slippage: '0.5',
           feeBps: '0'
@@ -289,10 +287,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
         );
 
         const data: ConvergenceQuoteResponse = await response.json();
-        
-        if (data.error) {
-          throw new Error(data.error);
-        }
+        if (data.error) throw new Error(data.error);
 
         setBuyAmount(data.outputAmount);
         setQuoteData(data);
@@ -309,6 +304,29 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
     }
   }, [sellSelectedToken?.address, buySelectedToken?.address, throttledAmount]);
 
+  // Single transaction handler - only called during swap
+  const handleTransaction = useCallback(async (transaction: VersionedTransaction) => {
+    if (!wallet.signTransaction) {
+      throw new Error("Wallet does not support signing");
+    }
+
+    const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash();
+    const signed = await wallet.signTransaction(transaction);
+    const signature = await connection.sendRawTransaction(signed.serialize(), {
+      skipPreflight: true,
+      maxRetries: 2,
+    });
+    
+    await connection.confirmTransaction({
+      signature,
+      blockhash,
+      lastValidBlockHeight
+    });
+    
+    return signature;
+  }, [connection, wallet]);
+
+  // Update onSubmit to use handleTransaction
   const onSubmit = useCallback(async () => {
     try {
       if (!wallet.connected || !wallet.signTransaction) {
@@ -324,9 +342,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
       const { swapTransaction } = await (
         await fetch("https://api.trade.convergence.so/router/swap", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             quote: quoteData.quote,
             userPublicKey: wallet.publicKey?.toString(),
@@ -335,21 +351,11 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
         })
       ).json();
 
-      setOrderStatus("SUBMITTED");
-
+      setOrderStatus("PENDING");
       const swapTransactionBuf = Buffer.from(swapTransaction, "base64");
       const transaction = VersionedTransaction.deserialize(swapTransactionBuf);
-      const signedTransaction = await wallet.signTransaction(transaction);
-      const rawTransaction = signedTransaction.serialize();
       
-      const latestBlockHash = await connection.getLatestBlockhash();
-
-      const txid = await connection.sendRawTransaction(rawTransaction, {
-        skipPreflight: true,
-        maxRetries: 2,
-      });
-
-      await connection.confirmTransaction(txid);
+      const txid = await handleTransaction(transaction);
       
       setOrderStatus("SUBMITTED");
       const successMessage = `Successfully swapped ${sellAmount} ${sellSelectedToken?.symbol} for ${quoteData.outputAmount} ${buySelectedToken?.symbol}`;
@@ -363,7 +369,7 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
       setError({ message: errorMessage, type: 'error' });
       setOrderStatus("INCOMPLETE");
     }
-  }, [wallet, connection, quoteData, sellSelectedToken, buySelectedToken]);
+  }, [wallet, handleTransaction, quoteData, sellAmount, sellSelectedToken, buySelectedToken]);
 
   // Only show TransactionMessage for PENDING state
   if (orderStatus === "PENDING") {
