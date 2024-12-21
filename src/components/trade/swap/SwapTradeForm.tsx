@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import {
   LineChart,
@@ -205,24 +205,46 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
     return `${start}...${end}`;
   };
 
+  // Add a ref to track if we've fetched balances
+  const balancesFetched = useRef(false);
+
+  // Optimize balance fetching
+  useEffect(() => {
+    const fetchBalances = async () => {
+      if (!wallet.connected || balancesFetched.current) return;
+
+      try {
+        // Fetch balances only once when wallet connects
+        if (sellSelectedToken) {
+          await getTokenBalance(sellSelectedToken);
+        }
+        if (buySelectedToken) {
+          await getTokenBalance(buySelectedToken);
+        }
+        balancesFetched.current = true;
+      } catch (error) {
+        console.error('Error fetching initial balances:', error);
+      }
+    };
+
+    fetchBalances();
+  }, [wallet.connected]);
+
+  // Update getTokenBalance to use more aggressive caching
   const getTokenBalance = async (token: Token) => {
     try {
-      // Add longer delay and cache results
       const cacheKey = `${token.address}_${wallet.publicKey?.toString()}`;
       const cached = balanceCache.get(cacheKey);
       if (cached) return cached;
 
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 1s delay
-
-      if (!wallet.publicKey || !token.address) return 0;
-
+      // Batch SOL and token balance requests
       let balance = 0;
       if (token.symbol === 'SOL') {
-        balance = await connection.getBalance(wallet.publicKey) / 10 ** 9;
+        balance = await connection.getBalance(wallet.publicKey!) / 10 ** 9;
       } else {
-        const tokenAddress = new PublicKey(token.address);
+        const tokenAddress = new PublicKey(token.address!);
         const ata = PublicKey.findProgramAddressSync(
-          [wallet.publicKey.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenAddress.toBuffer()],
+          [wallet.publicKey!.toBuffer(), TOKEN_PROGRAM_ID.toBuffer(), tokenAddress.toBuffer()],
           ASSOCIATED_TOKEN_PROGRAM_ID
         )[0];
         
@@ -230,8 +252,9 @@ export default function SwapTradeForm({ typeSelected }: SwapTradeFormProps) {
         balance = Number(tokenBalance.value.uiAmount);
       }
 
-      // Cache the result
+      // Cache with longer expiry
       balanceCache.set(cacheKey, balance);
+      setTimeout(() => balanceCache.delete(cacheKey), 30000); // 30s cache
       return balance;
     } catch (error) {
       console.error('Error in getTokenBalance:', error);
