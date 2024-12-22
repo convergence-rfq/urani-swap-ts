@@ -1,3 +1,5 @@
+"use client";
+
 import { useWallet } from "@solana/wallet-adapter-react";
 import { Token } from "@/lib/interfaces/tokensList";
 
@@ -19,7 +21,7 @@ export default function SubmitButton({
   const handleClick = async () => {
     if (!connected) {
       try {
-        await connect();
+        await connect?.();
       } catch (error) {
         console.error('Failed to connect wallet:', error);
       }
@@ -28,21 +30,20 @@ export default function SubmitButton({
     onSubmit();
   };
 
+  const getButtonText = () => {
+    if (isLoading) return "Loading...";
+    if (!connected) return "Connect Wallet";
+    if (!sellAmount || !sellToken) return "Enter an amount";
+    return "Swap";
+  };
+
   return (
     <button
       onClick={handleClick}
       disabled={isLoading || (!connected && !connect) || (connected && (!sellAmount || !sellToken))}
       className="w-full rounded-full bg-[#c7f284] hover:bg-[#d8ff9c] disabled:opacity-50 disabled:cursor-not-allowed p-4 text-black font-semibold transition-colors duration-200"
     >
-      {isLoading ? (
-        "Loading..."
-      ) : !connected ? (
-        "Connect Wallet"
-      ) : !sellAmount || !sellToken ? (
-        "Enter an amount"
-      ) : (
-        "Swap"
-      )}
+      {getButtonText()}
     </button>
   );
 }

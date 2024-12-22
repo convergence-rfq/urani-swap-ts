@@ -1,6 +1,8 @@
-import { useCallback, useState, useEffect } from 'react';
-import { Token, TokenWithBalance } from '@/lib/interfaces/tokensList';
-import { sanitizeInput, validateAmount, sanitizeAddress } from '@/lib/utils/validation';
+"use client";
+
+import { useCallback, useState } from "react";
+import { sanitizeAddress, sanitizeInput, validateAmount } from "@/lib/utils/validation";
+import type { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
 
 interface ConvergenceQuoteResponse {
   quote: string;
@@ -8,58 +10,30 @@ interface ConvergenceQuoteResponse {
   expectedPrice: number;
   priceImpact: number;
   totalFee: number;
-  error?: string;
-  routes: Array<{
-    amountIn: number;
-    amountOut: number;
-    priceImpact: number;
-    marketInfos: Array<{
-      id: string;
-      label: string;
-      amountIn: number;
-      amountOut: number;
-      lpFee: { amount: number; mint: string; };
-      platformFee: { amount: number; mint: string; };
-      priceImpact: number;
-    }>;
-  }>;
+  routes: RouteInfo[];
 }
 
-// Convergence API for trading functionality
-const CONVERGENCE_API = "https://api.trade.convergence.so";
+interface RouteInfo {
+  amountIn: number;
+  amountOut: number;
+  priceImpact: number;
+  marketInfos: MarketInfo[];
+}
 
-export function useConvergenceQuotes() {
-  const [tokens, setTokens] = useState<ConvergenceToken[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+interface MarketInfo {
+  id: string;
+  label: string;
+  amountIn: number;
+  amountOut: number;
+  lpFee: { amount: number; mint: string; };
+  platformFee: { amount: number; mint: string; };
+  priceImpact: number;
+}
 
-  useEffect(() => {
-    const fetchTokens = async () => {
-      setIsLoading(true);
-      try {
-        // Use Eclipse API endpoint
-        const response = await fetch('https://api.trade.convergence.so/tokens');
-        const data: ConvergenceTokensResponse = await response.json();
-        
-        if (Array.isArray(data.data)) {
-          setTokens(data.data);
-        } else {
-          console.error('Unexpected tokens format:', data);
-          setTokens([]);
-        }
-      } catch (err) {
-        setError('Failed to fetch tokens');
-        console.error('Error fetching tokens:', err);
-        setTokens([]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTokens();
-  }, []);
-
-  return { tokens, isLoading, error };
+interface SwapParams {
+  quote: string;
+  userPublicKey: string;
+  wrapUnwrapSOL?: boolean;
 }
 
 export default function useConvergenceQuotes(
@@ -67,18 +41,19 @@ export default function useConvergenceQuotes(
   setOrderStatus: (status: string) => void,
   sellSelectedToken: Token | TokenWithBalance | null,
   buySelectedToken: Token | TokenWithBalance | null,
-  amount: number,
+  sellAmount: number,
+  setBuyAmount: (amount: string) => void,
+  setBuyTokenBalance: (balance: string) => void
 ) {
-  const [quote, setQuote] = useState<string>('');
-  const [outputAmount, setOutputAmount] = useState<string>('');
+  const [quote, setQuote] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [quoteData, setQuoteData] = useState<ConvergenceQuoteResponse | null>(null);
 
   const getQuote = useCallback(async () => {
     if (!sellSelectedToken?.address || !buySelectedToken?.address) return;
     
-    const amount = sanitizeInput(amount.toString());
-    if (!validateAmount(amount)) {
+    const sanitizedAmount = sanitizeInput(sellAmount.toString());
+    if (!validateAmount(sanitizedAmount)) {
       throw new Error("Invalid amount");
     }
 
@@ -87,30 +62,66 @@ export default function useConvergenceQuotes(
       const params = new URLSearchParams({
         inputMint: sanitizeAddress(sellSelectedToken.address),
         outputMint: sanitizeAddress(buySelectedToken.address),
-        amount: amount,
-        slippage: '0.5'
+        amount: sanitizedAmount,
+        slippage: "0.5"
       });
 
       const response = await fetch(
-        `${CONVERGENCE_API}/router/quote?${params.toString()}`,
-        { method: 'GET' }
+        `https://api.trade.convergence.so/router/quote?${params.toString()}`,
+        { method: "GET" }
       );
 
       const data: ConvergenceQuoteResponse = await response.json();
       if (data.error) throw new Error(data.error);
 
+      setBuyAmount(data.outputAmount);
+
+      if (data.routes?.[0]) {
+        setBuyTokenBalance(data.routes[0].amountOut.toString());
+      }
+
       setQuote(data.quote);
-      setOutputAmount(data.outputAmount);
       setQuoteData(data);
       setOrderStatus("INCOMPLETE");
+
+      return {
+        quote: data.quote,
+        outputAmount: data.outputAmount,
+        routes: data.routes
+      };
+
     } catch (error) {
-      console.error('Error fetching quote:', error);
+      console.error("Error fetching quote:", error);
       setErrorMessage((error as Error).message || "Failed to get quote");
       setOrderStatus("ERROR");
+      return null;
     } finally {
       setIsLoading(false);
     }
-  }, [sellSelectedToken?.address, buySelectedToken?.address, amount, setErrorMessage, setOrderStatus]);
+  }, [
+    sellSelectedToken?.address,
+    buySelectedToken?.address,
+    setBuyAmount,
+    setBuyTokenBalance,
+    setErrorMessage,
+    setOrderStatus
+  ]);
 
-  return { quote, outputAmount, isLoading, getQuote, quoteData };
+  const prepareSwapParams = (publicKey: string): SwapParams => {
+    if (!quoteData?.quote) throw new Error("No quote available");
+    
+    return {
+      quote: quoteData.quote,
+      userPublicKey: publicKey,
+      wrapUnwrapSOL: true
+    };
+  };
+
+  return { 
+    quote, 
+    quoteData, 
+    isLoading, 
+    getQuote,
+    prepareSwapParams 
+  };
 } 
