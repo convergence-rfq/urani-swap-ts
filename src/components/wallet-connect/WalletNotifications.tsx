@@ -1,12 +1,11 @@
 "use client";
 
-import type { ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 
 const notificationStyles = {
-  root: "!bg-[#0F1111] !rounded-2xl !min-w-[320px] !p-5 !border-none !shadow-lg",
+  root: "!bg-black !rounded-2xl !min-w-[320px] !p-5 !border-none !shadow-lg",
   title: "!text-white !text-2xl !font-bold !mb-1",
   description: "!text-gray-400",
   closeButton: {
@@ -40,8 +39,8 @@ export default function WalletNotifications(): JSX.Element | null {
       loading: true,
       classNames: notificationStyles,
       styles: {
-        root: { backgroundColor: '#0F1111' },
-        loader: { color: '#00ffa3' }
+        root: { backgroundColor: "#0F1111" },
+        loader: { color: "#00ffa3" }
       },
       autoClose: 3000,
     });
@@ -62,7 +61,7 @@ export default function WalletNotifications(): JSX.Element | null {
       ),
       classNames: notificationStyles,
       styles: {
-        root: { backgroundColor: '#0F1111' }
+        root: { backgroundColor: "#0F1111" }
       },
       icon: <CheckIcon />,
       autoClose: 3000,
@@ -77,7 +76,7 @@ export default function WalletNotifications(): JSX.Element | null {
       message: "Your wallet has been disconnected",
       classNames: notificationStyles,
       styles: {
-        root: { backgroundColor: '#0F1111' }
+        root: { backgroundColor: "#0F1111" }
       },
       autoClose: 3000,
     });

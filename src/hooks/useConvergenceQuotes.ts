@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { sanitizeAddress, sanitizeInput, validateAmount } from "@/lib/utils/validation";
 import type { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
+import { sanitizeAddress, sanitizeInput, validateAmount } from "@/lib/utils/validation";
+import { useCallback, useState } from "react";
 
 interface ConvergenceQuoteResponse {
   quote: string;
@@ -101,6 +101,7 @@ export default function useConvergenceQuotes(
   }, [
     sellSelectedToken?.address,
     buySelectedToken?.address,
+    sellAmount,
     setBuyAmount,
     setBuyTokenBalance,
     setErrorMessage,
