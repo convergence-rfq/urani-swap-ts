@@ -1,11 +1,11 @@
 "use client";
 
+import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { useMemo } from "react";
-import { Commitment } from "@solana/web3.js";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
 import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adapter-wallets";
+import { Commitment } from "@solana/web3.js";
+import { useMemo } from "react";
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 

@@ -15,7 +15,6 @@ import { Token } from "@/lib/interfaces/tokensList";
 import { tokenList } from "@/lib/tokenlist";
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 interface SwapContextProps {
   sellAmount: string | number;
@@ -95,31 +94,6 @@ export function SwapProvider({ children }: PropsWithChildren) {
   const [orderStatus, setOrderStatus] = useState<OrderStatus>("INCOMPLETE");
   const [solscanUrl, setSolscanUrl] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-
-  const getTokenBalance = async (token: Token): Promise<number> => {
-    if (!wallet.publicKey) return 0;
-    
-    try {
-      if (token.symbol === 'SOL') {
-        const balance = await connection.getBalance(wallet.publicKey);
-        return balance / 1e9;
-      }
-
-      const tokenMint = new PublicKey(token.address);
-      const tokenAccounts = await connection.getTokenAccountsByOwner(wallet.publicKey, {
-        mint: tokenMint,
-      });
-
-      if (tokenAccounts.value.length > 0) {
-        const balance = await connection.getTokenAccountBalance(tokenAccounts.value[0].pubkey);
-        return Number(balance.value.uiAmount);
-      }
-      return 0;
-    } catch (error) {
-      console.error('Error getting token balance:', error);
-      return 0;
-    }
-  };
 
   const getDifferentToken = (currentToken: Token | null) => {
     if (!currentToken) return tokenList[0] || null;

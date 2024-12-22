@@ -1,12 +1,12 @@
+"use client";
+
 import { NumberInput } from "@mantine/core";
 import { Token, TokenWithBalance } from "@/lib/interfaces/tokensList";
-import TokenListModal from "./token-list-modal/TokenListModal";
-import TokenSelectorButton from "./TokenSelectorButton";
+import { useConvergenceTokens } from '@/hooks/useConvergenceTokens';
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
-import { useConvergenceTokens } from '@/hooks/useConvergenceTokens';
-import DOMPurify from "dompurify";
-import { isValidNumber } from "@/lib/utils/validation";
+import TokenListModal from "./token-list-modal/TokenListModal";
+import TokenSelectorButton from "./TokenSelectorButton";
 
 interface TokenSelectorProps {
   inputValue: string | number;
@@ -23,20 +23,6 @@ interface TokenSelectorProps {
   setOtherToken?: (token: Token | TokenWithBalance | null) => void;
 }
 
-// Add input validation
-const validateInput = (value: string): boolean => {
-  // Only allow numbers and decimals
-  return /^[0-9]*\.?[0-9]*$/.test(value) && isValidNumber(value);
-};
-
-// Add sanitization
-const sanitizeInput = (value: string): string => {
-  return DOMPurify.sanitize(value, {
-    ALLOWED_TAGS: [], // No HTML allowed
-    ALLOWED_ATTR: [] // No attributes allowed
-  });
-};
-
 export default function TokenSelector({
   inputValue,
   setInputValue,
@@ -51,152 +37,69 @@ export default function TokenSelector({
   setOtherToken,
 }: TokenSelectorProps) {
   const [opened, { open, close }] = useDisclosure(false);
-  const convertedToUSD =
-    tokenToUSDPrice &&
-    inputValue &&
-    (Number(inputValue || 0) * tokenToUSDPrice).toFixed(2);
+  const { tokens } = useConvergenceTokens();
 
-  // Add type guard
+  const convertedToUSD = tokenToUSDPrice && inputValue 
+    ? (Number(inputValue) * tokenToUSDPrice).toFixed(2)
+    : null;
+
   const hasBalance = (token: Token | TokenWithBalance): token is TokenWithBalance => {
     return 'balance' in token;
   };
 
-  const handleHalf = () => {
-    if (selectedToken && hasBalance(selectedToken) && selectedToken.balance) {
-      const halfAmount = Number(selectedToken.balance) / 2;
-      setInputValue(halfAmount.toString());
-    }
-  };
-
-  const handleMax = () => {
-    if (selectedToken && hasBalance(selectedToken) && selectedToken.balance) {
-      setInputValue(selectedToken.balance.toString());
-    }
-  };
-
-  const formatBalance = (balance: number | null | undefined) => {
-    if (!balance) return '0.00';
-    return Number(balance).toFixed(6);
-  };
-
   useEffect(() => {
-    const updateBalance = async () => {
-      if (selectedToken && getTokenBalance && wallet?.connected && !hasBalance(selectedToken)) {
+    if (selectedToken && getTokenBalance && wallet?.connected && !hasBalance(selectedToken)) {
+      const updateBalance = async () => {
         try {
           const balance = await getTokenBalance(selectedToken);
-          console.log("Token balance:", balance);
-          
-          const tokenWithBalance: TokenWithBalance = {
+          setSelectedToken({
             ...selectedToken,
-            balance: balance
-          };
-          
-          setSelectedToken(tokenWithBalance);
+            balance
+          });
         } catch (error) {
           console.error("Error updating balance:", error);
         }
-      }
-    };
-
-    if (selectedToken?.address && wallet?.connected && !hasBalance(selectedToken)) {
+      };
       updateBalance();
     }
-  }, [selectedToken?.address, getTokenBalance, wallet?.connected]);
-
-  const handleTokenSelect = (token: Token | TokenWithBalance | null) => {
-    if (otherToken && token?.address === otherToken.address) {
-      setSelectedToken(otherToken);
-      setOtherToken(selectedToken);
-    } else {
-      setSelectedToken(token);
-    }
-  };
-
-  const { tokens, isLoading: tokensLoading } = useConvergenceTokens();
+  }, [selectedToken, getTokenBalance, wallet?.connected, setSelectedToken]);
 
   return (
-    <>
-      <div className="relative flex min-h-[124px] flex-col space-y-3 rounded-xl border border-transparent p-4 focus-within:border-v2-primary/50 focus-within:shadow-swap-input-dark bg-[#131b24]">
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <label className="text-sm text-gray-400">{label}</label>
+        {convertedToUSD && (
+          <span className="text-sm text-gray-400">≈ ${convertedToUSD}</span>
+        )}
+      </div>
+      
+      <div className="flex gap-2">
         <NumberInput
-          label={
-            <>
-              <div className="flex justify-between w-full items-center">
-                {label}
-                <div className="flex items-center gap-2 ic-text-color">
-                  <span className="flex gap-1 text-[13px] cursor-pointer items-center space-x-1 rounded text-white/50">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-white/50"
-                    >
-                      <path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4" />
-                      <path d="M4 6v12c0 1.1.9 2 2 2h14v-4" />
-                      <path d="M18 12a2 2 0 0 0-2 2c0 1.1.9 2 2 2h4v-4h-4z" />
-                    </svg>
-                    <span className="ml-1">
-                      {selectedToken && hasBalance(selectedToken) ? formatBalance(selectedToken.balance) : '0.00'} {selectedToken?.symbol}
-                    </span>
-                  </span>
-                  {isSell && (
-                    <>
-                      <button 
-                        onClick={handleHalf}
-                        className="px-3 py-1 text-[13px] rounded-[6px] bg-[#1c2936] text-white/75 hover:bg-[#243242] active:bg-[#2d3e4f] transition-colors cursor-pointer"
-                      >
-                        HALF
-                      </button>
-                      <button
-                        onClick={handleMax}
-                        className="px-3 py-1 text-[13px] rounded-[6px] bg-[#1c2936] text-white/75 hover:bg-[#243242] active:bg-[#2d3e4f] transition-colors cursor-pointer"
-                      >
-                        MAX
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-            </>
-          }
-          aria-label="Enter Amount"
-          variant="unstyled"
-          clampBehavior="strict"
-          allowNegative={false}
-          leftSection={
-            <TokenSelectorButton onClick={open} token={selectedToken} />
-          }
-          hideControls
-          size="xl"
           value={inputValue}
-          onChange={setInputValue}
+          onChange={(val) => setInputValue(val)}
           placeholder="0.00"
-          classNames={{
-            label: "ml-1 text-sm font-bold text-white w-full",
-            section: "ml-1 w-auto",
-            input:
-              "h-full w-full border-none bg-transparent focus:ring-0 text-right placeholder:text-white/25 disabled:cursor-not-allowed disabled:text-black disabled:opacity-100 text-xl outline-none disabled:!text-white font-semibold text-[#e8f9ff] p-0",
-          }}
-          error={!selectedToken && "Please select a token"}
+          className="flex-1"
         />
-        {convertedToUSD ? (
-          <div className="text-xs text-[#e8f9ff80] text-right mr-3 mb-3">
-            ≈ $ {convertedToUSD || 0}
-          </div>
-        ) : null}
-        <TokenListModal
-          opened={opened}
-          open={open}
-          close={close}
-          setSelectedToken={handleTokenSelect}
-          excludeToken={otherToken}
+        <TokenSelectorButton
+          token={selectedToken}
+          onClick={open}
+          label={label}
         />
       </div>
-    </>
+
+      <TokenListModal
+        opened={opened}
+        close={close}
+        onSelect={(token) => {
+          if (otherToken && token.address === otherToken.address) {
+            setSelectedToken(otherToken);
+            setOtherToken?.(selectedToken);
+          } else {
+            setSelectedToken(token);
+          }
+        }}
+        tokens={tokens}
+      />
+    </div>
   );
 }
