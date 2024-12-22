@@ -1,14 +1,16 @@
 import { tokenPriceFeedIds } from "../tokenPriceFeedIds";
 
 export interface Token {
-  type: string;
+  address: string;
   name: string;
-  address: string | null;
-  symbol: keyof typeof tokenPriceFeedIds;
-  asset: string | null;
+  symbol: string;
   decimals: number;
-  logoURI: string;
-  pairs: never[];
+  logoURI?: string;
+  freeze_authority?: string | null;
+  mint_authority?: string | null;
+  update_authority?: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface TokenWithBalance extends Token {

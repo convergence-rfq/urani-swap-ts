@@ -1,41 +1,38 @@
+import { Token } from "@/lib/interfaces/tokensList";
 import Image from "next/image";
-import { TokenWithBalance } from "@/lib/interfaces/tokensList";
 
 interface TokenListItemProps {
-  item: TokenWithBalance;
+  item: Token;
   onClick: () => void;
 }
 
 export default function TokenListItem({ item, onClick }: TokenListItemProps) {
   return (
     <button
-      key={item.address}
-      className="w-full block hover:bg-[#435467] rounded-sm border-[transparent] hover:border-[#83fbdd]  transition-all px-4 py-2 my-2"
       onClick={onClick}
+      className="flex items-center w-full p-4 hover:bg-[#1c2936] transition-colors"
     >
-      <div className="flex items-center">
-        <div className="text-4xl mr-3">
+      <div className="flex items-center gap-3">
+        {item.logoURI ? (
           <Image
-            className="rounded-full"
-            width={35}
-            height={35}
             src={item.logoURI}
-            alt=""
+            alt={item.symbol}
+            width={32}
+            height={32}
+            className="rounded-full"
+            onError={(e) => {
+              e.currentTarget.src = '/default-token-icon.png';
+            }}
           />
-        </div>
-        <div className="flex flex-col flex-grow text-left">
-          <span className="text-[14px] text-[#31c5c5] font-medium">
-            {item.symbol}
-          </span>
-          <span className="text-[12px] text-[#787f83]">{item.name}</span>
-        </div>
-        {item.balance && (
-          <div className="text-right">
-            <span className="text-xs text-gray-500">
-              {item.balance.toFixed(2)}
-            </span>
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-[#202629] flex items-center justify-center">
+            <span className="text-white/50 text-xs">{item.symbol.slice(0, 3)}</span>
           </div>
         )}
+        <div className="flex flex-col items-start">
+          <span className="text-white font-medium">{item.symbol}</span>
+          <span className="text-white/50 text-sm">{item.name}</span>
+        </div>
       </div>
     </button>
   );

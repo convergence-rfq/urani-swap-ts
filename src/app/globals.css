@@ -167,13 +167,13 @@ body {
 }
 
 .wallet-connect-button span:first-of-type img {
-  width: 32px !important;
+  /* width: 32px !important; */
   height: 32px !important;
 }
 
 .wallet-connect-button span:last-of-type {
   color: #000 !important;
-  font-size: 1rem;
+  font-size: 2rem;
   line-height: 1.5rem;
   font-weight: 600;
 }
@@ -260,4 +260,12 @@ body {
 
 .reactFlow-scroll::-webkit-scrollbar {
   width: 0;
+}
+
+.wallet-connect-button:hover {
+  background: linear-gradient(to right, #d8ff9c, #7cffff) !important;
+}
+
+.wallet-connect-button:not(:disabled):hover {
+  background: linear-gradient(to right, #d8ff9c, #7cffff) !important;
 }
