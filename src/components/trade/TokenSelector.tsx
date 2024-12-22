@@ -55,10 +55,10 @@ export default function TokenSelector({
                     </svg>
                     0.000123 USDC
                   </span>
-                  <span className="px-3 py-1 text-[13px] rounded-[6px] bg-[#1c2936] text-white/75">
+                  <span className="px-3 py-1 text-[13px] rounded-[6px] bg-[#1c2936] text-white/75 hover:shadow-swap-input-dark hover:bg-[rgba(199,242,132,0.2)] border border-[#1c2936] hover:border-[#c7f282] inline-block cursor-pointer">
                     HALF
                   </span>
-                  <span className="px-3 py-1 text-[13px] rounded-[6px] bg-[#1c2936] text-white/75">
+                  <span className="px-3 py-1 text-[13px] rounded-[6px] bg-[#1c2936] text-white/75 hover:shadow-swap-input-dark hover:bg-[rgba(199,242,132,0.2)] border border-[#1c2936] hover:border-[#c7f282] inline-block cursor-pointer">
                     MAX
                   </span>
                 </div>
