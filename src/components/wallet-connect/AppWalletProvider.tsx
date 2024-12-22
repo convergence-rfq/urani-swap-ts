@@ -10,8 +10,8 @@ import { PhantomWalletAdapter, SolflareWalletAdapter } from "@solana/wallet-adap
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 const HELIUS_RPC = {
-  http: process.env.NEXT_PUBLIC_HELIUS_RPC_URL!,
-  ws: process.env.NEXT_PUBLIC_HELIUS_RPC_WS!,
+  http: process.env.NEXT_PUBLIC_HELIUS_RPC_URL || "https://api.devnet.solana.com",
+  ws: process.env.NEXT_PUBLIC_HELIUS_RPC_WS || "wss://api.devnet.solana.com",
   network: WalletAdapterNetwork.Devnet
 };
 

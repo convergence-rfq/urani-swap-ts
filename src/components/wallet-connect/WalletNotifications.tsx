@@ -1,8 +1,8 @@
 "use client";
 
 import { notifications } from "@mantine/notifications";
-import { useEffect, useState } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { useEffect, useState } from "react";
 
 const notificationStyles = {
   root: "!bg-black !rounded-2xl !min-w-[320px] !p-5 !border-none !shadow-lg",
